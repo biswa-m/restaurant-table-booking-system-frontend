@@ -5,11 +5,11 @@ import store from "./store";
 
 Vue.config.productionTip = false;
 
-var vue01 = new Vue({
+new Vue({
   el: '#app',
   router,
   store,
   render: function(h) {
-	return h(App);
+		return h(App);
   }
 });
