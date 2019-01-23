@@ -6,12 +6,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
 		loginScreen: false,
-		user: {
-			firstName: '',
-			lastName: '',
-			email: '',
-			token: ''
-		}
+		authenticated: false,
+		user: {},
 	},
 
 	mutations: {
@@ -23,10 +19,13 @@ export default new Vuex.Store({
 		},
 
 		restaurantOwnerLogin(state, data) {
-			state.user.firstName = JSON.stringify(data.user.firstName);
-			state.user.lastName = JSON.stringify(data.user.lastName);
-			state.user.email = JSON.stringify(data.user.email);
-			state.user.token = JSON.stringify(data.user.token);
+			state.authenticated = true;
+			state.user = JSON.stringify(data.user);
+		},
+
+		logout(state) {
+			state.user = {};
+			state.authenticated = false;
 		}
 	},
   actions: {}

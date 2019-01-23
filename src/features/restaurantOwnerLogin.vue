@@ -57,13 +57,14 @@
 					}
 				).then((response) => {
 					if (response.ok) {
-						console.log('Login successfull');
 						this.$store.commit('restaurantOwnerLogin', response.data);
 						this.$router.push('/restaurant');
+						console.log('Login successfull');
 					}
-				}).catch(() => {
+				}).catch((e) => {
 					this.error = true;
 					this.msg = "The username and password combination is incorrect."
+					console.log(e);
 				});
 			}
 		}

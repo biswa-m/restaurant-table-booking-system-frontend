@@ -29,11 +29,14 @@
 								</form>
 							</li>
 						</ul>
-						<div class="nav-link">
+						<div v-show="!$store.state.authenticated" class="nav-link">
 							<router-link to="/restaurant/login">For Restauranteurs<span class="sr-only">(current)</span></router-link>
 						</div>
-						<div class="nav-link">
+						<div v-show="!$store.state.authenticated" class="nav-link">
 							<button id="login" @click="showLoginScreen">Login</button>
+						</div>
+						<div v-show="$store.state.authenticated" class="nav-link">
+							<button id="logout" @click="logout">Logout</button>
 						</div>
 					</div>
 				</nav>
@@ -46,8 +49,12 @@
 export default {
 	methods: {
     showLoginScreen: function() {
-      this.$store.commit('showLoginScreen')
-    }
+      this.$store.commit('showLoginScreen');
+    },
+		logout: function() {
+			this.$store.commit('logout');
+			this.$router.push('/');
+		}
   }
 }
 </script>

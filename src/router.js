@@ -25,6 +25,6 @@ export default new Router({
 		},
 
 		// otherwise redirect to home
-    //{ path: '*', redirect: '/' }
+    { path: '*', redirect: '/' }
   ]
 });
