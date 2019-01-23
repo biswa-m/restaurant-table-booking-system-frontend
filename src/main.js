@@ -1,4 +1,5 @@
 import Vue from "vue";
+import vueResource from "vue-resource";
 import BootstrapVue from 'bootstrap-vue'
 
 import App from "./App.vue";
@@ -10,6 +11,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.config.productionTip = false;
 
+Vue.use(vueResource);
 Vue.use(BootstrapVue);
 
 new Vue({
