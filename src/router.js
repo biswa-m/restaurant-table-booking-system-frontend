@@ -2,7 +2,8 @@ import Vue from "vue";
 import Router from "vue-router";
 
 import home from "@/views/home.vue";
-import restaurantOwnerLogin from "@/features/restaurantOwnerLogin.vue";
+import restaurantOwnerLogin from "@/features/restaurant/login.vue";
+import restaurantHome from "@/features/restaurant/home.vue";
 
 Vue.use(Router);
 
@@ -21,7 +22,7 @@ export default new Router({
     {
       path: "/restaurant",
       name: "restaurant",
-      component: home 
+      component: restaurantHome
 		},
 
 		// otherwise redirect to home

@@ -19,7 +19,7 @@ export default new Vuex.Store({
 		},
 
 		restaurantOwnerLogin(state, data) {
-			state.authenticated = true;
+			state.authenticated = 'restaurant';
 			state.user = JSON.stringify(data.user);
 		},
 
