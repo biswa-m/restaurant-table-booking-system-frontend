@@ -1,6 +1,7 @@
 import Vue from "vue";
 import vueResource from "vue-resource";
 import BootstrapVue from 'bootstrap-vue'
+//import vueTimepicker from 'vue2-timepicker'
 
 import App from "./App.vue";
 import {router} from "./router";
@@ -13,6 +14,7 @@ Vue.config.productionTip = false;
 
 Vue.use(vueResource);
 Vue.use(BootstrapVue);
+//Vue.use(vueTimepicker)
 
 new Vue({
   el: '#app',

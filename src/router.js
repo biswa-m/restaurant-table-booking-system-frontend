@@ -5,6 +5,7 @@ import store from "@/store.js";
 import home from "@/views/home.vue";
 import restaurantOwnerLogin from "@/features/restaurant/login.vue";
 import restaurantHome from "@/features/restaurant/home.vue";
+import restaurantAdd from "@/features/restaurant/restaurantAdd.vue";
 
 Vue.use(Router);
 
@@ -25,8 +26,14 @@ export const router = new Router({
       name: "restaurant",
       component: restaurantHome
 		},
+    {
+      path: "/restaurant/add",
+      name: "restaurantAdd",
+      component: restaurantAdd
+		},
 
 		// otherwise redirect to home
+    { path: '/restaurant/*', redirect: '/restaurant' },
     { path: '*', redirect: '/' }
   ]
 });

@@ -29,8 +29,8 @@
 								</form>
 							</li>
 						</ul>
-						<div v-show="!$store.state.authenticated" class="nav-link">
-							<router-link to="/restaurant/login">For Restauranteurs<span class="sr-only">(current)</span></router-link>
+						<div  class="nav-link">
+							<router-link to="/restaurant">For Restauranteurs<span class="sr-only">(current)</span></router-link>
 						</div>
 						<div v-show="!$store.state.authenticated" class="nav-link">
 							<button id="login" @click="showLoginScreen">Login</button>

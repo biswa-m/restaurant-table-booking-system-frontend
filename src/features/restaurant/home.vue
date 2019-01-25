@@ -2,7 +2,7 @@
 	<div v-show="authenticated=='restaurant'"class="container" style="background:#f5f5f5">
 		<div class="row">
 			<div class="restaurant restaurant-add">
-				<button class="btn btn-lg btn-primary">Add restaurant</button>
+				<router-link to="/restaurant/add" class="btn btn-lg btn-primary">Add restaurant</router-link>
 			</div>
 		</div>
 		<div class="row">

@@ -11,10 +11,10 @@
 							<strong>Warning! </strong>{{msg}}	</div>
 						<form v-on:submit.prevent="login" id="Login">
 							<div class="form-group">
-								<input v-model="email" type="email" class="form-control" id="inputEmail" placeholder="Email Address">
+								<input v-model="email" type="email" class="form-control" id="inputEmail" placeholder="Email Address" required>
 							</div>
 							<div class="form-group">
-								<input v-model="password" type="password" class="form-control" id="inputPassword" placeholder="Password">
+								<input v-model="password" type="password" class="form-control" id="inputPassword" placeholder="Password" required>
 							</div>
 							<div class="forgot">
 								<a href="">Forgot password?</a>
