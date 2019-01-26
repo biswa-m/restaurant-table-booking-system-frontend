@@ -1,18 +1,36 @@
 <template>
 	<div v-show="restaurants.length" class="container">
-		<div>
-			<h3>Restaurant List</h3>
+		<div class="row">
+			<div class="col-md-8 mx-auto">
+				<div class="restaurant-list">
+					<h3>Restaurant List</h3>
+					<div class="list-group">
+						<div v-for="restaurant in restaurants">
+							<router-link v-bind:to="route(restaurant.id)" v-bind:class="verification(restaurant.verified)">
+								{{restaurant.name}}
+							</router-link>
+							<div class="restaurant-details list-group-item
+									list-group-item-action flex-column align-items-start">
+									<div v-show="!restaurant.verified" class="alert-warning ">
+										<small>This restaurant is not verified yet</small>
+									</div>
+								<div class="row">
+									<span v-html="restaurant.description"></span>
+								</div>
+								<div class="row">
+									<div class="col-md-9 mx-auto">
+										<h5>Address</h5>
+										<span v-html="multiline(restaurant.address)"></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="restaturant-list">
-			<ul>
-				<li v-for="restaurant in restaurants">
-					<a class="btn">
-						{{restaurant.name}}<br>
-						{{restaurant.id}}
-					</a>
-				</li>
-			</ul>
-		</div>
+
+
 	</div>
 </template>
 
@@ -21,7 +39,23 @@
 		name: "restaurant-list",
 
 		data() {
-			return {restaurants: ['a']}
+			return {
+				restaurants: []
+			}
+		},
+
+		methods: {
+			route(id) {
+				return "/restaurant/" + id;
+			},
+			multiline(value) {
+				return JSON.parse(JSON.stringify(value).replace(/\\n/gi, "<br/>"));
+			},
+			verification(value) {
+				return value
+					? "btn btn-outline-success btn-block btn-restaurant":
+					"btn btn-outline-secondary btn-block btn-restaurant";
+			}
 		},
 
 		mounted() {
@@ -47,7 +81,7 @@
 </script>
 
 <style>
-	.restaurant-list {
-		text-align: left;
-	}
+.btn-restaurant {
+	margin-top:40px;
+}
 </style>
