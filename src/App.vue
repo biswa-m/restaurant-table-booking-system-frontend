@@ -1,7 +1,9 @@
 <template>
   <div id="app">
 		<defaultLayout/>
-		<router-view/>
+		<div class="router-view">
+			<router-view/>
+		</div>
   </div>
 </template>
 
@@ -23,5 +25,8 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+.router-view {
+	padding-top: 64px;
 }
 </style>

@@ -60,4 +60,12 @@ export default {
 </script>
 
 <style>
+.header {
+  position: fixed;
+	z-index: 10;
+  left: 0;
+  width: 100%;
+  transition-delay: 0.3s;
+}
+
 </style>
