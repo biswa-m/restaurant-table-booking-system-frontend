@@ -59,7 +59,7 @@
 					if (response.ok) {
 						this.$store.commit('restaurantOwnerLogin', response.data);
 						this.$router.push('/restaurant');
-						console.log('Login successfull');
+						console.log('Login successful');
 					}
 				}).catch((e) => {
 					this.error = true;

@@ -52,19 +52,28 @@ export const router = new Router({
 
 router.beforeEach((to, from, next) => {
 	// Redirect to relavant login page (customer/ restaurant owner)
-	// If not logged in as authorized userand trying to access a restricted page
-
-	const customerOnly = [];
+	// If not logged in as authorized user and trying to access a restricted page
+	const publicAcess = ['/restaurant/login', '/login', '/' ]
 	const restauranteursOnly = ['/restaurant/', '/restaurant'];
+	const customerOnly = [];
 
 	const loggedInAs = store.state.authenticated;
 
-	if (restauranteursOnly.includes(to.path) && (loggedInAs != 'restaurant')) {
-		console.log('restaurantOnly');
-		return next('/restaurant/login');
-	} else if (customerOnly.includes(to.path) && (loggedInAs != 'customer')) {
-		console.log('customerOnly');
-		return next('/login');
+	// req page has no public access
+	if (!publicAcess.includes(to.path)){
+		// only restauranteurs has access but not logged in as restauranteurs
+		if((/^\/restaurant\//.test(to.path) || restauranteursOnly.includes(to.path)) && (loggedInAs != 'restaurant')) {
+			console.log('Page restricted to restauranteurs only. Redirecting to login.');
+			return next('/restaurant/login');
+		// only customer has access but not logged in as customer
+		} else if (customerOnly.includes(to.path) && (loggedInAs != 'customer')) {
+			console.log('Page restricted to customer only. Redirecting to login.');
+			return next('/login');
+		// both customer and restauranteurs have access but not logged in
+		} else if (!loggedInAs) {
+			console.log('Restricted page. Redirecting to login.');
+			return next('/login');
+		}
 	}
 
 	next();
