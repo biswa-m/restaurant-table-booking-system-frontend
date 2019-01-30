@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="mx-auto">
 		<form class="form-box">
 		<div v-for="(table, index) in newTables" class="model">
 			<button type="button" class="close" @click="cancelTable(index)" aria-label="Close">
@@ -151,6 +151,7 @@
 					if (response.ok) {
 						this.resetAddTable();
 						console.log('Tables are added');
+						this.$emit('addtables');
 					} else {
 						this.error = true;
 						this.msg = (response.body.errors && response.body.errors.message)
