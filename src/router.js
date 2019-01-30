@@ -33,8 +33,15 @@ export const router = new Router({
 		},
     {
 			path: "/restaurant/:id",
-      name: "restaurantDetails",
-      component: () => import(/* webpackChunkName: "restaurant" */ "@/features/restaurant/restaurantDetails.vue")
+      name: "restaurantDashboard",
+      component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restaurant/restaurantDashboard.vue"),
+
+			children: [
+				{
+					path: "tables",
+					component: () => import("@/features/restaurant/tables.vue")
+				}
+			]
 		},
 
 		// otherwise redirect to home

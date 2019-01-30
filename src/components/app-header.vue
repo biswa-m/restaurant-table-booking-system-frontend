@@ -15,19 +15,6 @@
 									<router-link to="/">Home<span class="sr-only">(current)</span></router-link>
 								</div>
 							</li>
-							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-								<div class="dropdown-menu" aria-labelledby="dropdown04">
-									<a class="dropdown-item" href="#">Action</a>
-									<a class="dropdown-item" href="#">Another action</a>
-									<a class="dropdown-item" href="#">Something else here</a>
-								</div>
-							</li>
-							<li>
-								<form class="form-inline my-2 my-md-0">
-									<input class="form-control" type="text" placeholder="Search">
-								</form>
-							</li>
 						</ul>
 						<div  class="nav-link">
 							<router-link to="/restaurant">For Restauranteurs<span class="sr-only">(current)</span></router-link>
