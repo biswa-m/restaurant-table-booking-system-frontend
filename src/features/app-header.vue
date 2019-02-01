@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import loginScreen from "@/features/login.vue"
+import loginScreen from "@/features/customer/login/dialog.vue"
 
 export default {
 	data() {
