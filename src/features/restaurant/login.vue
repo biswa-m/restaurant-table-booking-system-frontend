@@ -2,13 +2,14 @@
 	<div class="loginForm">
 		<div class="container">
 				<div class="login-form">
-					<div class="main-div">
+					<div class="main-div mx-auto">
 						<div class="panel">
 							<h2>Restaurant Login</h2>
 							<p>Please enter your email and password</p>
 						</div>
 						<div v-show="error" class="alert alert-warning alert-dismissible" role="alert">
-							<strong>Warning! </strong>{{msg}}	</div>
+							<strong>Warning! </strong>{{msg}}
+						</div>
 						<form v-on:submit.prevent="login" id="Login">
 							<div class="form-group">
 								<input v-model="email" type="email" class="form-control" id="inputEmail" placeholder="Email Address" required>
@@ -73,12 +74,17 @@
 </script>
 
 <style scoped>
-.loginForm {background: #777777; width:100%; height:100%}
+.loginForm {
+	background: #999;
+	width:100%;
+	height:100vh;
+	padding-top: 10px;
+}
 .form-heading { color:#fff; font-size:23px;}
 .panel h2{ color:#444444; font-size:18px; margin:0 0 8px 0;}
 .panel p { color:#777777; font-size:14px; margin-bottom:30px; line-height:24px;}
 .login-form .form-control {
-  background: #f7f7f7 none repeat scroll 0 0;
+  background: #f7ebd7 none repeat scroll 0 0;
   border: 1px solid #d4d4d4;
   border-radius: 4px;
   font-size: 14px;
@@ -88,9 +94,8 @@
 .main-div {
   background: #ffffff none repeat scroll 0 0;
   border-radius: 2px;
-  margin: 10px auto 30px;
-  max-width: 38%;
-  padding: 50px 70px 70px 71px;
+  max-width: 600px;
+  padding: 5% 10% 10% 10%;
 }
 
 .login-form .form-group {
@@ -120,10 +125,5 @@
   font-size: 14px;
   margin: auto;
 }
-.login-form .btn.btn-primary.reset {
-  background: #ff9900 none repeat scroll 0 0;
-}
-.back { text-align: left; margin-top:10px;}
-.back a {color: #444444; font-size: 13px;text-decoration: none;}
 
 </style>

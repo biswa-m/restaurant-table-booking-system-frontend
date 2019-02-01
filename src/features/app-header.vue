@@ -29,20 +29,36 @@
 				</nav>
 			</slot>
 		</div>
+		<loginScreen v-show="loginScreen" @close="hideLoginScreen"></loginScreen>
 	</div>
 </template>
 
 <script>
+import loginScreen from "@/features/login.vue"
+
 export default {
+	data() {
+		return {
+			loginScreen: false,
+		}
+	},
+
 	methods: {
     showLoginScreen: function() {
-      this.$store.commit('showLoginScreen');
+			this.loginScreen = true;
+    },
+    hideLoginScreen: function() {
+			this.loginScreen = false;
     },
 		logout: function() {
 			this.$store.commit('logout');
 			this.$router.push('/');
 		}
-  }
+  },
+
+	components: {
+		loginScreen: loginScreen
+	}
 }
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-		<defaultLayout/>
+		<appHeader/>
 		<div class="router-view">
 			<router-view/>
 		</div>
@@ -8,12 +8,12 @@
 </template>
 
 <script>
-import defaultLayout from '@/layout/main.vue';
+import appHeader from "@/features/app-header.vue"
 
 export default {
 	name: "app",
 	components: {
-		defaultLayout
+		appHeader
 	}
 }
 </script>

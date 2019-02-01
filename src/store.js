@@ -8,21 +8,18 @@ export default new Vuex.Store({
   plugins: [createPersistedState()],
 
   state: {
-		loginScreen: false,
 		authenticated: false,
-		user: {},
+		user: {}
 	},
 
 	mutations: {
-		showLoginScreen(state) {
-			state.loginScreen = true;
-		},
-		hideLoginScreen(state) {
-			state.loginScreen = false;
-		},
-
 		restaurantOwnerLogin(state, data) {
 			state.authenticated = 'restaurant';
+			state.user = JSON.stringify(data.user);
+		},
+
+		customerLogin(state, data) {
+			state.authenticated = 'customer';
 			state.user = JSON.stringify(data.user);
 		},
 

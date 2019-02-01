@@ -3,20 +3,35 @@
 		<div class="modal-mask">
 			<div class="modal-wrapper">
 				<div class="modal-container">
-					<button class="modal-default-button" @click="$emit('close')">
-						X
-          </button>
-					<slot name = body>
-						Login Screen for customer
-						<div>
-							<label>Username</label>
-							<input>
-						</div>
-						<div>
-							<label>password</label>
-							<input>
-						</div>
-					</slot>
+					<button class="modal-default-button"
+						@click="$emit('close')">&times
+					</button>
+					<div class=modal-login>
+						<slot name="body">
+							<div class="panel">
+								<h2><b>Login</b></h2>
+								<p>Please enter your email and password</p>
+							</div>
+							<div v-show="error" class="alert alert-warning alert-dismissible" role="alert">
+								<strong>Warning! </strong>{{msg}}
+							</div>
+							<form v-on:submit.prevent="login" id="Login">
+								<div class="form-group">
+									<input v-model="email" type="email" class="form-control" id="inputEmail" placeholder="Email Address" required>
+								</div>
+								<div class="form-group">
+									<input v-model="password" type="password" class="form-control" id="inputPassword" placeholder="Password" required>
+								</div>
+								<div class="forgot">
+									<a href="#">Forgot password?</a>
+								</div>
+								<button class="btn btn-lg btn-primary btn-block login-button" data-loading-text="Signing in..." type="submit">Login</button>
+							</form>
+							<hr>
+							<p class="signup">Don't have an account?</p>
+							<button class="btn btn-md btn-primary btn-block signup-button" data-loading-text="Loading..">Sign Up</button>
+						</slot>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -25,12 +40,47 @@
 
 <script>
 export default {
-  name: "loginScreen",
+	  name: "loginScreen",
+
+		data() {
+			return {
+				email: '',
+				password: '',
+				error: false,
+				msg: ''
+			}
+		},
+		methods: {
+			login() {
+				this.error=false;
+				this.$http.post(
+					process.env.VUE_APP_API_ROUTE + 'user/login',
+					{
+						user: {
+							email: this.email,
+							password: this.password
+						}
+					}
+				).then((response) => {
+					if (response.ok) {
+						this.$emit('close');
+						this.$store.commit('customerLogin', response.data);
+						console.log('Login successful');
+					}
+				}).catch((e) => {
+					this.error = true;
+					this.msg = (e.body && e.body.errors && e.body.errors)
+						? e.body.errors
+						: "Unable to login";
+					console.log(e);
+				});
+			}
+		}
 };
 </script>
 
 <style scoped>
-	.modal-mask {
+.modal-mask {
   position: fixed;
   z-index: 9998;
   top: 0;
@@ -48,36 +98,80 @@ export default {
 }
 
 .modal-container {
-  width: 300px;
+  max-width: 400px;
+	background: #fff;
   margin: 0px auto;
-  padding: 20px 30px;
-  background-color: #fff;
-  border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+  border-radius: 10px;
+  box-shadow: 0px 8px 8px rgba(0, 0, 0, .33);
   transition: all .3s ease;
   font-family: Helvetica, Arial, sans-serif;
 }
 
-.modal-header h3 {
-  margin-top: 0;
-  color: #42b983;
+.modal-login {
+	padding: 10% 10% 10% 10%;
 }
 
-.modal-body {
-  margin: 20px 0;
+.title {
+	font-size: 30px;
 }
 
+.form-heading { color:#fff; font-size:23px;}
+.form-control {
+  background: #f7ebd7 none repeat scroll 0 0;
+  border: 1px solid #d4d4d4;
+  border-radius: 4px;
+  font-size: 14px;
+  height: 50px;
+  line-height: 50px;
+}
+.panel h2{ color:#444444; font-size:18px; margin:0 0 8px 0;}
+.panel p { color:#777777; font-size:14px; margin-bottom:30px; line-height:24px;}
+.form-group {
+  margin-bottom:10px;
+}
+.forgot a {
+  color: #777777;
+  font-size: 14px;
+  text-decoration: underline;
+}
+.login-button {
+  background: #f0ad4e none repeat scroll 0 0;
+  border-color: #f0ad4e;
+  color: #ffffff;
+  font-size: 14px;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  padding: 0;
+}
+.signup-button {
+  background: #f3c27e none repeat scroll 0 0;
+  border-color: #f3c27e;
+}
+.forgot {
+  text-align: left; margin-bottom:30px;
+}
+.botto-text {
+  color: #ffffff;
+  font-size: 14px;
+  margin: auto;
+}
 .modal-default-button {
-  float: right;
+  border-radius: 50px;
+	padding: 0px 10px 0px 10px;
+	background: #f0ad4e;
+	font-size: 25px;
+	float: right;
 }
-
+.signup {
+	font-size: 14px;
+	color: #555;
+	margin-bottom: 4px;
+}
 /*
  * The following styles are auto-applied to elements with
  * transition="modal" when their visibility is toggled
  * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
  */
 
 .modal-enter {
