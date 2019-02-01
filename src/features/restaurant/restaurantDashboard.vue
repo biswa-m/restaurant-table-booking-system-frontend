@@ -21,9 +21,12 @@
 
 		data() {
 			const id = this.$route.params.id;
+			const collapsed = (window.innerWidth < 950) ? true : false;
+			const collapsedPadding = collapsed ? 'padding-left:50px' : 'padding-left:350px;'
 			return {
-				collapsed: false,
-				collapsedPadding: 'padding-left:350px',
+				collapsed: collapsed,
+				collapsedPadding: collapsedPadding,
+				windowInnerWidth: window.innerWidth,
 				menu: [
 					{
 						href: '/restaurant/' + id + '',
@@ -39,11 +42,27 @@
 			}
 		},
 
+		mounted(){
+			window.addEventListener("resize", ()=> {
+				this.windowInnerWidth = window.innerWidth;
+
+				var previousCollapsed = this.collapsed;
+				this.collapsed = (window.innerWidth < 950) ? true : false;
+
+				if (this.collapsed != previousCollapsed)
+					this.changePadding();
+			});
+		},
+
 		methods: {
+			changePadding() {
+				this.collapsedPadding = this.collapsed ? 'padding-left:50px' : 'padding-left:350px;'
+			},
+
 			onCollapse(val) {
-				console.log(`collapsed ${val}`)
-				this.collapsed = val
-				this.collapsedPadding = val ? 'padding-left:50px' : 'padding-left:350px;'
+				console.log(`collapsed ${val}`);
+				this.collapsed = val;
+				this.changePadding();
 			}
 		}
 	}
