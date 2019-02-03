@@ -2,9 +2,9 @@ import Vue from "vue";
 import Router from "vue-router";
 
 import store from "@/store.js";
-import home from "@/views/home.vue";
+
+import home from "@/features/customer/home.vue";
 import restaurantOwnerLogin from "@/features/restaurant/login.vue";
-import restaurantHome from "@/features/restaurant/home.vue";
 import restaurantAdd from "@/features/restaurant/restaurantAdd.vue";
 
 Vue.use(Router);
@@ -29,7 +29,7 @@ export const router = new Router({
     {
       path: "/restaurant",
       name: "restaurant",
-      component: restaurantHome
+      component: () => import(/* webpackChunkName: "restauranteur" */ "@/features/restaurant/home.vue"),
 		},
     {
       path: "/restaurant/add",
