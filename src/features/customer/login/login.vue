@@ -3,7 +3,7 @@
 
 		<div v-show="!signup" class="login">
 			<div class="panel">
-				<h2><b>Login</b></h2>
+				<h2><b class="loginMsg"><slot name="loginMsg">Login</slot></b></h2>
 				<p>Please enter your email and password</p>
 			</div>
 			<div v-show="error" class="alert alert-warning alert-dismissible" role="alert">
@@ -123,7 +123,6 @@ export default {
 						: "Unable to signup. Please try again";
 					console.log(e);
 				});
-
 			}
 		}
 };
@@ -139,7 +138,7 @@ export default {
   height: 50px;
   line-height: 50px;
 }
-.panel h2{ color:#444444; font-size:18px; margin:0 0 8px 0;}
+.panel h2{ color:#444444; font-size:25px; margin:0 0 8px 0;}
 .panel p { color:#777777; font-size:14px; margin-bottom:30px; line-height:24px;}
 .form-group {
   margin-bottom:10px;
