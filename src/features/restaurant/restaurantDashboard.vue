@@ -8,7 +8,6 @@
 </template>
 
 <script>
-	import Router from "vue-router";
 	import {SidebarMenu} from 'vue-sidebar-menu';
 	import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 

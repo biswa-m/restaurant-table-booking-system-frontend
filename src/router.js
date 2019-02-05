@@ -48,6 +48,11 @@ export const router = new Router({
 				}
 			]
 		},
+    {
+			path: "/:restaurant",
+      name: "restaurantDetails",
+      component: () => import("@/features/customer/restaurant/restaurantDetails.vue"),
+    },
 
 		// otherwise redirect to home
     { path: '/restaurant/*', redirect: '/restaurant' },
@@ -64,7 +69,6 @@ router.beforeEach((to, from, next) => {
 
 	const loggedInAs = store.state.authenticated;
 
-	// req page has no public access
 	if (!publicAcess.includes(to.path)){
 		// only restauranteurs has access but not logged in as restauranteurs
 		if((/^\/restaurant\//.test(to.path) || restauranteursOnly.includes(to.path)) && (loggedInAs != 'restaurant')) {
@@ -74,12 +78,15 @@ router.beforeEach((to, from, next) => {
 		} else if (customerOnly.includes(to.path) && (loggedInAs != 'customer')) {
 			console.log('Page restricted to customer only. Redirecting to login.');
 			return next('/login');
-		// both customer and restauranteurs have access but not logged in
+		// public acess to '/:restaurantId'
+		} else if (/^\/(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/.test(to.path)) {
+			return next();
+		// only customer or restauranteurs have access but not logged in
 		} else if (!loggedInAs) {
 			console.log('Restricted page. Redirecting to login.');
 			return next('/login');
 		}
-	}
 
+	}
 	next();
 });
