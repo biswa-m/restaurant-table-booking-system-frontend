@@ -3,7 +3,7 @@
 		<div class="dashboard">
 			<router-view></router-view>
 		</div>
-		<sidebar-menu id="sidebar" :menu="menu" :collapsed="collapsed" @collapse="onCollapse" style="padding-top:60px"/>
+		<sidebar-menu id="sidebar" :menu="menu" :collapsed="collapsed" @collapse="onCollapse" :showOneChild="true" style="padding-top:60px"/>
 	</div>
 </template>
 
@@ -31,6 +31,29 @@
 						href: '/restaurant/' + id + '',
 						title: 'Dashboard',
 						icon: 'fa fa-user'
+					},
+					{
+						href: '/restaurant/' + id + '/booking',
+						title: 'Bookings',
+						icon: 'fa fa-calendar',
+						child: [
+							{
+								href: '/restaurant/' + id + '/booking',
+								title: 'Upcoming bookings',
+							},
+							{
+								href: '/restaurant/' + id + '/booking',
+								title: 'Add bookings',
+							},
+							{
+								href: '/restaurant/' + id + '/booking',
+								title: 'Search bookings',
+							},
+							{
+								href: '/restaurant/' + id + '/booking',
+								title: 'All bookings',
+							},
+						]
 					},
 					{
 						href: '/restaurant/' + id + '/tables',

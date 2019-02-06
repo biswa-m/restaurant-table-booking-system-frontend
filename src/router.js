@@ -45,6 +45,10 @@ export const router = new Router({
 				{
 					path: "tables",
 					component: () => import("@/features/restaurant/tables.vue")
+				},
+				{
+					path: "booking",
+					component: () => import("@/features/restaurant/booking.vue")
 				}
 			]
 		},

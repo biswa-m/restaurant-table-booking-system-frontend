@@ -79,11 +79,10 @@
 				this.$http.get(
 					process.env.VUE_APP_API_ROUTE + 'table',
 					{
-						params: {restaurant: this.$route.params.id}
-					},
-					{
+						params: {restaurant: this.$route.params.id},
 						headers: {
-							Authorization: 'Bearer ' + JSON.parse(this.$store.state.user).token}
+							Authorization: 'Bearer ' + JSON.parse(this.$store.state.user).token
+						}
 					}
 				).then((response) => {
 					console.log(response);
