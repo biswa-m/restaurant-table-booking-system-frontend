@@ -4,7 +4,7 @@
 			<div v-show="error" class="alert alert-warning alert-dismissible mx-auto" role="alert">
 				<strong>{{msg}}</strong>
 			</div>
-			<b-table responsive striped hover stacked="sm" :items="bookings" :fields="bookingFields" @row-clicked="toggleDetails">
+			<b-table responsive hover stacked="sm" :items="bookings" :fields="bookingFields" @row-clicked="toggleDetails">
 
 				<template slot="bookingFrom" slot-scope="row">
 					{{convertFormat(row.value)}}
@@ -15,6 +15,8 @@
 				</template>
 
 				<template slot="actions" slot-scope="row">
+					<b-button v-if="row.item.bookingStatus!='canceled'" size="sm" @click.stop="changeBookingStatus('canceled', row.item)" class="btn-status">Cancel</b-button>
+					<b-button v-if="row.item.bookingStatus=='pending'" size="sm" variant="success" @click.stop="changeBookingStatus('confirmed', row.item)" class="btn-status">Confirm</b-button>
 				</template>
 
 				<template slot="row-details" slot-scope="row">
@@ -67,7 +69,15 @@
 				console.log(response);
 				if (response.ok && response.body.bookings) {
 					// Add _showDetails key to toggle details on table
-					this.bookings = response.body.bookings.map(x => {x._showDetails=false ; return x});
+					this.bookings = response.body.bookings.map(x => {
+						x._showDetails = false ;
+						x._rowVariant = (x.bookingStatus == 'confirmed')
+							? 'success'
+							: (x.bookingStatus == 'canceled')
+								? 'active'
+								: 'warning';
+						return x;
+					});
 					console.log('Bookings: ', (this.bookings));
 				} else {
 					this.error = true;
@@ -91,6 +101,32 @@
 
 			convertFormat(date) {
 				return ((new Date(date)).toLocaleString());
+			},
+
+			changeBookingStatus(val, item) {
+				this.$http.put(
+					process.env.VUE_APP_API_ROUTE + 'restaurant/booking/' + this.restaurantId + '/' + item._id + '/status', 
+					{
+						booking: {bookingStatus: val}
+					},
+					{
+						headers: {
+							Authorization: 'Bearer ' + JSON.parse(this.$store.state.user).token
+						}
+					}
+				).then((response) => {
+					console.log(response);
+					if (response.ok && response.body.booking) {
+						item.bookingStatus = response.body.booking.bookingStatus;
+						item._rowVariant = (item.bookingStatus == 'confirmed')
+							? 'success'
+							: (item.bookingStatus == 'canceled')
+								? 'active'
+								: 'warning';
+					}
+				}).catch((e) => {
+					console.log('Error during booking status updation');
+				});
 			}
 		}
 	}
