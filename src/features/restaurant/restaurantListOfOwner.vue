@@ -6,9 +6,9 @@
 					<h3>Restaurant List</h3>
 					<div class="list-group">
 						<div v-for="restaurant in restaurants">
-							<router-link v-bind:to="route(restaurant.id)" v-bind:class="verification(restaurant.verified)">
+							<a @click="selectRestaurant(restaurant)" v-bind:class="verification(restaurant.verified)">
 								{{restaurant.name}}
-							</router-link>
+							</a>
 							<div class="restaurant-details list-group-item
 									list-group-item-action flex-column align-items-start">
 									<div v-show="!restaurant.verified" class="alert-warning ">
@@ -45,8 +45,9 @@
 		},
 
 		methods: {
-			route(id) {
-				return "/restaurant/" + id;
+			selectRestaurant(restaurant) {
+				this.$store.commit('selectRestaurant', restaurant);
+				this.$router.push("/restaurant/" + restaurant.id);
 			},
 			multiline(value) {
 				return JSON.parse(JSON.stringify(value).replace(/\\n/gi, "<br/>"));
