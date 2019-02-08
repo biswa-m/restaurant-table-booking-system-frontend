@@ -1,5 +1,5 @@
 <template>
-	<div v-show="authenticated=='restaurant'"class="container" style="background:#fff">
+	<div v-if="authenticated=='restaurant'"class="container" style="background:#fff">
 		<div class="row list-table">
 			<div v-show="error" class="alert alert-warning alert-dismissible mx-auto" role="alert">
 				<strong>{{msg}}</strong>

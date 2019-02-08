@@ -1,6 +1,6 @@
 <template>
 	<div class="container wrapper">
-		<div class="main-div">
+		<div class="main-div" v-if="restaurant != 'notFound'">
 			<div class="restaurant">
 				<div class="row">
 					<div class="col-md-6">
@@ -17,11 +17,15 @@
 				<initiate-booking :restaurant="restaurant"/>
 			</div>
 		</div>
+		<div v-if="restaurant == 'notFound'">
+			<notFound/>
+		</div>
 	</div>
 </template>
 
 <script>
 	import initiateBooking from "@/features/customer/booking/index.vue"
+
 	export default {
 		data() {
 			return {
@@ -30,10 +34,11 @@
 		},
 
 		components: {
-			'initiate-booking': initiateBooking
+			'initiate-booking': initiateBooking,
+			'notFound': () => import(/* webpackChunkName: "notFound-404" */ "@/features/pageNotFound.vue")
 		},
 
-		mounted() {
+		beforeMount() {
 			this.$http.get(
 				process.env.VUE_APP_API_ROUTE + 'restaurants?restaurantid=' + this.$route.params.restaurant
 			).then((response) => {
@@ -43,6 +48,7 @@
 				}
 			}).catch((e) => {
 				console.log(e);
+				this.restaurant = 'notFound'
 			});
 		}
 	}

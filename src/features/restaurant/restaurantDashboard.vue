@@ -64,6 +64,13 @@
 			}
 		},
 
+		beforeMount() {
+			if (!this.$store.state.restaurant.id) {
+				console.log('No selected restaurant found. Redirecting..');
+				return this.$router.push({name: 'restaurantList'});
+			}
+		},
+
 		mounted(){
 			window.addEventListener("resize", ()=> {
 				this.windowInnerWidth = window.innerWidth;
