@@ -28,35 +28,35 @@
 				windowInnerWidth: window.innerWidth,
 				menu: [
 					{
-						href: '/restaurant/' + id + '',
+						href: '/restaurant/',
 						title: 'Dashboard',
 						icon: 'fa fa-user'
 					},
 					{
-						href: '/restaurant/' + id + '/booking',
+						href: '/restaurant/booking',
 						title: 'Bookings',
 						icon: 'fa fa-calendar',
 						child: [
 							{
-								href: '/restaurant/' + id + '/booking',
+								href: '/restaurant/booking',
 								title: 'Upcoming bookings',
 							},
 							{
-								href: '/restaurant/' + id + '/booking',
+								href: '/restaurant/booking',
 								title: 'Add bookings',
 							},
 							{
-								href: '/restaurant/' + id + '/booking',
+								href: '/restaurant/booking',
 								title: 'Search bookings',
 							},
 							{
-								href: '/restaurant/' + id + '/booking',
+								href: '/restaurant/booking',
 								title: 'All bookings',
 							},
 						]
 					},
 					{
-						href: '/restaurant/' + id + '/tables',
+						href: '/restaurant/tables',
 						title: 'Tables',
 						icon: 'fa fa-coffee'
 					}

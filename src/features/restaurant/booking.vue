@@ -32,7 +32,6 @@
 </template>
 
 <script>
-
 	export default {
 		name: "tables",
 
@@ -40,8 +39,8 @@
 		},
 
 		data () {
+			this.getBookings();
 			return {
-				restaurantId: this.$route.params.id,
 				error: false,
 				msg: '',
 				authenticated: this.$store.state.authenticated,
@@ -56,42 +55,16 @@
 			}
 		},
 
-		mounted() {
-			console.log('Getting bookings');
-			this.$http.get(
-				process.env.VUE_APP_API_ROUTE + 'restaurant/bookings/' + this.restaurantId,
-				{
-					headers: {
-						Authorization: 'Bearer ' + JSON.parse(this.$store.state.user).token
-					}
-				}
-			).then((response) => {
-				console.log(response);
-				if (response.ok && response.body.bookings) {
-					// Add _showDetails key to toggle details on table
-					this.bookings = response.body.bookings.map(x => {
-						x._showDetails = false ;
-						x._rowVariant = (x.bookingStatus == 'confirmed')
-							? 'success'
-							: (x.bookingStatus == 'canceled')
-								? 'active'
-								: 'warning';
-						return x;
-					});
-					console.log('Bookings: ', (this.bookings));
-				} else {
-					this.error = true;
-					this.msg = (response.body.errors && response.body.errors.message)
-						? response.body.errors.message
-						: "Could not get the bookings";
-				}
-			}).catch((e) => {
-				this.error = true;
-				this.msg = (e.body && e.body.errors && e.body.errors.message)
-					? e.body.errors.message
-					: "Could not get the bookings";
-				console.log(JSON.stringify(e));
-			});
+		computed: {
+			restaurantId() {
+				return this.$store.state.restaurant.id;
+			}
+		},
+
+		watch: {
+			restaurantId() {
+				this.getBookings();
+			}
 		},
 
 		methods: {
@@ -126,6 +99,44 @@
 					}
 				}).catch((e) => {
 					console.log('Error during booking status updation');
+				});
+			},
+
+			getBookings() {
+				console.log('Getting bookings');
+				this.$http.get(
+					process.env.VUE_APP_API_ROUTE + 'restaurant/bookings/' + this.$store.state.restaurant.id,
+					{
+						headers: {
+							Authorization: 'Bearer ' + JSON.parse(this.$store.state.user).token
+						}
+					}
+				).then((response) => {
+					console.log(response);
+					if (response.ok && response.body.bookings) {
+						// Add _showDetails key to toggle details on table
+						this.bookings = response.body.bookings.map(x => {
+							x._showDetails = false ;
+							x._rowVariant = (x.bookingStatus == 'confirmed')
+								? 'success'
+								: (x.bookingStatus == 'canceled')
+									? 'active'
+									: 'warning';
+							return x;
+						});
+						console.log('Bookings: ', (this.bookings));
+					} else {
+						this.error = true;
+						this.msg = (response.body.errors && response.body.errors.message)
+							? response.body.errors.message
+							: "Could not get the bookings";
+					}
+				}).catch((e) => {
+					this.error = true;
+					this.msg = (e.body && e.body.errors && e.body.errors.message)
+						? e.body.errors.message
+						: "Could not get the bookings";
+					console.log(JSON.stringify(e));
 				});
 			}
 		}

@@ -5,7 +5,6 @@ import store from "@/store.js";
 
 import home from "@/features/customer/home.vue";
 import restaurantOwnerLogin from "@/features/restaurant/login.vue";
-import restaurantAdd from "@/features/restaurant/restaurantAdd.vue";
 
 Vue.use(Router);
 
@@ -27,28 +26,28 @@ export const router = new Router({
       component: restaurantOwnerLogin
 		},
     {
-      path: "/restaurant",
-      name: "restaurant",
+      path: "/restaurant/home",
+      name: "restaurantList",
       component: () => import(/* webpackChunkName: "restauranteur" */ "@/features/restaurant/home.vue"),
 		},
     {
       path: "/restaurant/add",
       name: "restaurantAdd",
-      component: restaurantAdd
+      component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restaurant/restaurantAdd.vue"),
 		},
     {
-			path: "/restaurant/:id",
+			path: "/restaurant",
       name: "restaurantDashboard",
       component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restaurant/restaurantDashboard.vue"),
 
 			children: [
 				{
 					path: "tables",
-					component: () => import("@/features/restaurant/tables.vue")
+					component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restaurant/tables.vue")
 				},
 				{
 					path: "booking",
-					component: () => import("@/features/restaurant/booking.vue")
+					component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restaurant/booking.vue")
 				}
 			]
 		},

@@ -10,7 +10,7 @@ export default new Vuex.Store({
   state: {
 		authenticated: false,
 		user: {},
-		restaurant: {}
+		restaurant: {id: '', name: ''}
 	},
 
 	mutations: {
@@ -27,7 +27,7 @@ export default new Vuex.Store({
 		logout(state) {
 			state.user = {};
 			state.authenticated = false;
-			state.restaurant = '';
+			state.restaurant = {id: '', name: ''};
 		},
 		selectRestaurant(state, restaurant) {
 			if (!restaurant || !restaurant.id || !restaurant.name)

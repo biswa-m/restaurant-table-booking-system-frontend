@@ -41,13 +41,13 @@
 									|| 'My Account')+ ' ')}}
 								</template>
 								<b-dropdown-item v-if="$store.state.authenticated=='restaurant'"
-									@click="$router.push('/restaurant/' + $store.state.restaurant.id)">Dashboard</b-dropdown-item>
+									@click="$router.push('/restaurant')">Dashboard</b-dropdown-item>
 								<b-dropdown-item v-if="$store.state.authenticated=='restaurant'"
-									@click="$router.push('/restaurant/' + $store.state.restaurant.id + '/booking')">Bookings</b-dropdown-item>
+									@click="$router.push('/restaurant/booking')">Bookings</b-dropdown-item>
 								<b-dropdown-item v-if="$store.state.authenticated=='restaurant'"
-									@click="$router.push('/restaurant/')">Restaurants</b-dropdown-item>
+									@click="$router.push('/restaurant/home')">Restaurants</b-dropdown-item>
 								<b-dropdown-item v-if="$store.state.authenticated=='restaurant'"
-									@click="$router.push('/restaurant/' + $store.state.restaurant.id + '/tables')">Tables</b-dropdown-item>
+									@click="$router.push('/restaurant/tables')">Tables</b-dropdown-item>
 								<b-dropdown-item v-if="$store.state.authenticated=='customer'">Profile</b-dropdown-item>
 								<b-dropdown-item v-if="$store.state.authenticated=='customer'">Bookings</b-dropdown-item>
 								<b-dropdown-divider></b-dropdown-divider>

@@ -73,13 +73,25 @@
 			}
 		},
 
+		computed: {
+			restaurantId() {
+				return this.$store.state.restaurant.id;
+			}
+		},
+
+		watch: {
+			restaurantId () {
+				this.getTables();
+			}
+		},
+
 		methods: {
 			getTables() {
 				console.log('Getting tables');
 				this.$http.get(
 					process.env.VUE_APP_API_ROUTE + 'table',
 					{
-						params: {restaurant: this.$route.params.id},
+						params: {restaurant: this.$store.state.restaurant.id},
 						headers: {
 							Authorization: 'Bearer ' + JSON.parse(this.$store.state.user).token
 						}
@@ -87,7 +99,7 @@
 				).then((response) => {
 					console.log(response);
 					if (response.ok && response.body.tables) {
-						console.log('Tables: ', JSON.stringify(response.body.tables));
+						console.log('Tables: ', response.body.tables);
 						this.tables = response.body.tables;
 					} else {
 						this.error = true;
