@@ -24,7 +24,7 @@
 </template>
 
 <script>
-	import initiateBooking from "@/features/customer/booking/index.vue"
+	import initiateBooking from "@/features/customer/booking/initBooking.vue"
 
 	export default {
 		data() {

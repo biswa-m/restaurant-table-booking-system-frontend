@@ -48,8 +48,11 @@
 									@click="$router.push('/restaurant/home')">Restaurants</b-dropdown-item>
 								<b-dropdown-item v-if="$store.state.authenticated=='restaurant'"
 									@click="$router.push('/restaurant/tables')">Tables</b-dropdown-item>
+								<b-dropdown-item v-if="$store.state.authenticated=='customer'"
+									@click="$router.push('/')">Home</b-dropdown-item>
 								<b-dropdown-item v-if="$store.state.authenticated=='customer'">Profile</b-dropdown-item>
-								<b-dropdown-item v-if="$store.state.authenticated=='customer'">Bookings</b-dropdown-item>
+								<b-dropdown-item v-if="$store.state.authenticated=='customer'"
+									@click="$router.push('/bookings')">Bookings</b-dropdown-item>
 								<b-dropdown-divider></b-dropdown-divider>
 								<b-dropdown-item @click="logout">Logout</b-dropdown-item>
 							</b-dropdown>

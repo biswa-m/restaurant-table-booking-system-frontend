@@ -21,6 +21,11 @@ export const router = new Router({
       component: () => import(/* webpackChunkName: "customer" */ "@/features/customer/login/page.vue"),
     },
     {
+      path: "/bookings",
+      name: "customerBookings",
+      component: () => import(/* webpackChunkName: "customer-profile" */ "@/features/customer/booking/listBookings.vue"),
+    },
+    {
       path: "/restaurant/login",
       name: "restaurantOwnerLogin",
       component: restaurantOwnerLogin
