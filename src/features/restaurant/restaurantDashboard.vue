@@ -19,7 +19,6 @@
 		},
 
 		data() {
-			const id = this.$route.params.id;
 			const collapsed = (window.innerWidth < 950) ? true : false;
 			const collapsedPadding = collapsed ? 'padding-left:50px' : 'padding-left:350px;'
 			return {
