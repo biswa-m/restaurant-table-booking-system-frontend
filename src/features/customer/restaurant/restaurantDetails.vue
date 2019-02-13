@@ -14,7 +14,7 @@
 				</div>
 			</div>
 			<div class="booking">
-				<initiate-booking :restaurant="restaurant"/>
+				<initiate-booking v-if="restaurant.name" :restaurant="restaurant"/>
 			</div>
 		</div>
 		<div v-if="restaurant == 'notFound'">

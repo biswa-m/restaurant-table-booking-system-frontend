@@ -11,20 +11,38 @@
 				<b-row>
 					<b-col md="4">
 						<span class="label">Date</span>
-						<b-form-input class="input" type="date" :state="validateDate(date)" v-model="date" placeholder="Date" required/>
+						<datepicker
+							v-model="date"
+							input-class="form-control input"
+							calendar-class="calendar1"
+							:disabledDates="disabledDates"
+							placeholder="Select Date"
+						>
+						</datepicker>
 					</b-col>
 					<b-col md="4">
-						<span class="label">Time</span>
-						<b-form-input class="input" type="time" :state="validateTime(time, date)" v-model="time" required/>
+						<span class="label">Time</span><br/>
+						<div class="dropdown">
+							<button class="form-control input" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								{{formatTime(time)}}
+								<span v-if="time!=0 && !time" class="placeholder">Select time</span>
+							</button>
+							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+								<div v-if="!date" class="text-warning text-center">Select date first</div>
+								<div v-for="slot in timeSlots">
+									<a @click="time=slot" class="dropdown-item">{{formatTime(slot)}}</a>
+								</div>
+							</div>
+						</div>
 					</b-col>
 					<b-col md="4">
 						<span class="label">No of persons</span>
-						<b-form-input class="input" type="number" v-model="noOfPersons" placeholder="People" required/>
+						<b-form-input class="input" type="number" min=1 v-model="noOfPersons" placeholder="Enter no. of persons" required/>
 					</b-col>
 				</b-row>
 				<div class="booking-details">
 					<b-row>
-						<p v-show="!this.date || !this.time || !this.noOfPersons"
+						<p v-show="!this.date || (this.time != 0 && !this.time) || !this.noOfPersons"
 							class="form-instruction mx-auto">
 							Please enter your date, time and party size
 						</p>
@@ -32,6 +50,7 @@
 				</div>
 				<b-row>
 					<button class="btn btn-lg btn-primary submit-button mx-auto"
+						:disabled="!date || (time != 0 && !time) || !noOfPersons || noOfPersons==0"
 						data-loading-text="Finding table..."
 						type="submit">
 						<b>Book Table</b>
@@ -87,46 +106,64 @@
 				</login>
 			</div>
 		</div>
-		<div v-if="(bookingWindow=='confirmation'
-			&& $store.state.authenticated=='customer')
-			|| bookingWindow=='booked'" class="customer-details">
-			<h4 v-show="bookingWindow=='confirmation'">Please confirm your booking details</h4>
-			<div v-show="bookingWindow=='booked'" class="successful">
-				<h4>We have recieved your request</h4>
-				<p>You will get the confirmation shortly</p>
-			</div>
+		<div v-if="(bookingWindow=='confirmation'	&& $store.state.authenticated=='customer')"	class="customer-details">
+			<h4>Please confirm your booking details</h4>
 			<hr>
 			<b-form class="form"  v-on:submit.prevent="bookTable">
-				<b-row>
-					<b-col md="4">
-						<span class="label">Date</span>
-						<b-form-input class="input" type="date" :state="validateDate(date)" v-model="date" placeholder="Date" required readonly/>
-					</b-col>
-					<b-col md="4">
-						<span class="label">Time</span>
-						<b-form-input class="input" type="time" :state="validateTime(time, date)" v-model="time" required readonly/>
-					</b-col>
-					<b-col md="4">
-						<span class="label">No of persons</span>
-						<b-form-input class="input" type="number" v-model="noOfPersons" placeholder="People" required readonly/>
-					</b-col>
-				</b-row>
-				<b-row class="restaurant-row">
-					<b-col sm="4">
-						<span class="textarea">Restaurant Name:</span>
+				<b-row class="my-3">
+					<b-col sm="4" class="text-sm-right">
+						<span class="">Date:</span>
 					</b-col>
 					<b-col sm="8">
-						<div class="textarea">
+						<div class="">
+							<datepicker
+								v-model="date"
+								input-class="no-style"
+								calendar-class="calendar1"
+								:disabledDates="disabledDates"
+								placeholder="Select Date"
+								disabled
+							>
+							</datepicker>
+						</div>
+					</b-col>
+				</b-row>
+				<b-row class="my-3">
+					<b-col sm="4" class="text-sm-right">
+						<span class="">Time:</span>
+					</b-col>
+					<b-col sm="8">
+						<div class="">
+							{{formatTime(time)}}
+						</div>
+					</b-col>
+				</b-row>
+				<b-row class="my-3">
+					<b-col sm="4" class="text-sm-right">
+						<span class="">No of persons:</span>
+					</b-col>
+					<b-col sm="8">
+						<div class="">
+							{{noOfPersons}}
+						</div>
+					</b-col>
+				</b-row>
+				<b-row class="my-3">
+					<b-col sm="4" class="text-sm-right">
+						<span class="">Restaurant Name:</span>
+					</b-col>
+					<b-col sm="8">
+						<div class="">
 							{{restaurant.name}}
 						</div>
 					</b-col>
 				</b-row>
-				<b-row class="restaurant-row">
-					<b-col sm="4">
-						<span class="textarea">Restaurant Address:</span>
+				<b-row class="my-3">
+					<b-col sm="4" class="text-sm-right">
+						<span class="">Restaurant Address:</span>
 					</b-col>
 					<b-col sm="8">
-						<div class="textarea address">
+						<div class="">
 							<span v-html="multiline(restaurant.address)"></span>
 						</div>
 					</b-col>
@@ -144,21 +181,52 @@
 							v-if="bookingWindow=='confirmation'">
 							<b>Confirm</b>
 						</button>
-						<button class="btn btn-lg btn-outline-primary"
-							@click.prevent="resetBookingWindow"
-							v-if="bookingWindow=='booked'">
-							<b>Book More</b>
-						</button>
 					</div>
 				</b-row>
 			</b-form>
-
+		</div>
+		<div v-if="bookingWindow=='booked'" class="successful">
+			<h4>We have recieved your request</h4>
+			<p>You will get the confirmation shortly</p>
+			<div class = mt-5>
+				<button class="btn btn-lg btn-outline-success"
+					@click.prevent="resetBookingWindow"
+					v-if="bookingWindow=='booked'">
+					<b>Book More</b>
+				</button>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script>
 	import login from "@/features/customer/login/login.vue";
+	import datepicker from "vuejs-datepicker";
+
+	let generateTimeSlots = function(start, end, interval, date) {
+		let value = start;
+		let slots = [];
+		let overflow = 0;
+
+		while (value <= (end + 1 - interval)) {
+			slots.push(value);
+
+			value += interval;
+			overflow = parseInt((value % 100) / 60);
+			value = value - (overflow * 60) + (overflow * 100);
+		}
+
+		// If booking date is today, do not show past times.
+		if (date.setHours(0, 0, 0, 0) == (new Date()).setHours(0, 0, 0, 0)) {
+			// Get current time and convert it to hhmm format
+			let currentTime = ((new Date()).getHours())*100 + (new Date()).getMinutes();
+			// remove array element from timeSlots which are less than current time
+			slots = slots.filter(x => x > currentTime);
+		}
+
+		return slots
+	}
+
 	export default {
 		data() {
 			return {
@@ -172,6 +240,10 @@
 				phone: '',
 
 				days: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
+				timeSlots: [],
+				timeInterval: 30,
+
+				disabledDates: {},
 
 				error: false,
 				msg: ""
@@ -180,32 +252,49 @@
 
 		props: ['restaurant'],
 
-		components: {
-			login: login
+		components: {login, datepicker},
+
+		beforeMount() {
+			// Set datepicker
+			let restaurant = this.restaurant;
+			let days = [];
+			this.disabledDates.to = new Date(new Date().setDate(new Date().getDate()-1));
+
+			this.days.forEach(function(day, index) {
+				if (restaurant.businessHours[day].end == 0) {
+					days.push(index);
+				}
+			})
+			this.disabledDates.days = days;
+		},
+
+		watch: {
+			date: function(date) {
+				// Reset selected time
+				this.time = null;
+
+				if (!date) return;
+
+				// Set time slots
+				let businessHours = this.restaurant.businessHours[this.days[date.getDay()]];
+				this.timeSlots = generateTimeSlots(businessHours.start, businessHours.end, this.timeInterval, date);
+			}
 		},
 
 		methods: {
-			validateDate(value) {
-				if (!value) return undefined;
-				if ((new Date(value)).getTime() >= (new Date().setHours(0,0,0,0))) return undefined;
-				else return false;
-			},
-			validateTime(time, date) {
-				if (!time || !date) return undefined;
+			formatTime(hhmm) {
+				let padZero = function(value) {
+					let str = "0" + value;
+					return str.substr(str.length - 2)
+				}
 
-				date = new Date(date + ' ' + time);
+				hhmm = parseInt(hhmm);
 
-				// If time is less than current time
-				if (date.getTime() <= Date.now()) return false;
-
-				// Check business hours
-				let businessHours = this.restaurant.businessHours[this.days[date.getDay()]];
-				time = parseInt(time[0]+time[1]) * 100 + parseInt(time[3]+time[4]);
-
-				if (time >= businessHours.start && time <= businessHours.end)
-					return undefined;
-				else
-					return false;
+				if (hhmm != 0 && !hhmm) return null
+				else if (hhmm < 100) return '12:' + padZero(hhmm) + ' AM';
+				else if (hhmm < 1200) return (padZero(parseInt(hhmm / 100)) + ':' + padZero(hhmm % 100) + ' AM');
+				else if (hhmm >= 1200 && hhmm < 1300) return '12:' + padZero(hhmm % 100) + ' PM';
+				else return (padZero(parseInt(hhmm / 100) - 12) + ':' + padZero(hhmm % 100) + ' PM');
 			},
 
 			checkUser() {
@@ -214,7 +303,7 @@
 					&& JSON.parse(this.$store.state.user).token) {
 					this.bookingWindow = 'confirmation';
 				} else {
-					return this.bookingWindow = "customerDetails"
+					return this.bookingWindow = "customerDetails";
 				}
 			},
 
@@ -257,7 +346,8 @@
 			bookTable() {
 				console.log('Processing booking request');
 
-				let date = (new Date(this.date + ' ' + this.time)).getTime();
+				let date = this.date.setHours(parseInt(this.time/100), this.time%100 , 0, 0);
+				console.log(date);
 
 				this.$http.post(
 					process.env.VUE_APP_API_ROUTE + 'booking',
@@ -306,11 +396,13 @@
 	}
 </script>
 
-<style>
+<style scope>
 	.input {
 		margin: 10px 0 10px 0; 
 		height: 50px;
-		background: #f7ebd7;
+		background: #f7ebd7 !important;
+		text-align: left;
+		border: 1px solid #3333;
 	}
 	.booking-details {
 		height: 150px;
@@ -332,6 +424,9 @@
 		margin: 10px;
 		width: 200px;
 	}
+	.submit-button:disabled {
+		background: #dbb77a
+	}
 	.edit-btn {
 		width: 100px;
 		font-size: 17px;
@@ -346,13 +441,6 @@
 	}
 	.restaurant-row {
 		padding: 15px 0 15px 0;
-		text-align: right;
-	}
-	.textarea {
-		text-align: left;
-	}
-	.address {
-		margin-bottom: 50px;
 	}
 	.successful {
 		padding: 10px;
@@ -361,5 +449,21 @@
 		border-width: 2px;
 		border-radius: 10px;
 		border-color: green;
+	}
+	.calendar1 {
+		max-width: 100%;
+		min-width: 200px;
+	}
+	.placeholder {
+		color: #444a;
+	}
+	.dropdown-menu {
+		height: auto;
+		max-height: 230px;
+		overflow-x: hidden;
+	}
+	.no-style {
+		background: 0;
+		border-style: none;
 	}
 </style>
