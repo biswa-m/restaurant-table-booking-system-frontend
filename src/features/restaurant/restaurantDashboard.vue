@@ -1,9 +1,15 @@
 <template>
-	<div id="dashboard" :style="collapsedPadding">
-		<div class="dashboard">
-			<router-view></router-view>
+	<div id="dashboard" class="text-left" :style="collapsedPadding">
+		<div class="dashboard text-center">
+			<router-view :item="item"></router-view>
 		</div>
-		<sidebar-menu id="sidebar" :menu="menu" :collapsed="collapsed" @collapse="onCollapse" :showOneChild="true" style="padding-top:60px"/>
+		<sidebar-menu id="sidebar"
+			:menu="menu"
+			:collapsed="collapsed"
+			@collapse="onCollapse"
+			@itemClick="onItemClick"
+			width="250px"
+			style="padding-top:60px"/>
 	</div>
 </template>
 
@@ -20,7 +26,7 @@
 
 		data() {
 			const collapsed = (window.innerWidth < 950) ? true : false;
-			const collapsedPadding = collapsed ? 'padding-left:50px' : 'padding-left:350px;'
+			const collapsedPadding = collapsed ? 'padding-left:50px' : 'padding-left:250px;'
 			return {
 				collapsed: collapsed,
 				collapsedPadding: collapsedPadding,
@@ -42,6 +48,10 @@
 							},
 							{
 								href: '/restaurant/booking',
+								title: 'Past bookings',
+							},
+							{
+								href: '/restaurant/booking',
 								title: 'Add bookings',
 							},
 							{
@@ -59,7 +69,8 @@
 						title: 'Tables',
 						icon: 'fa fa-coffee'
 					}
-				]
+				],
+				item: null 
 			}
 		},
 
@@ -84,13 +95,17 @@
 
 		methods: {
 			changePadding() {
-				this.collapsedPadding = this.collapsed ? 'padding-left:50px' : 'padding-left:350px;'
+				this.collapsedPadding = this.collapsed ? 'padding-left:50px' : 'padding-left:250px;'
 			},
 
 			onCollapse(val) {
 				console.log(`collapsed ${val}`);
 				this.collapsed = val;
 				this.changePadding();
+			},
+
+			onItemClick(event, item) {
+				this.item = item.title;
 			}
 		}
 	}
@@ -99,6 +114,7 @@
 <style>
 
 .dashboard {
-	padding-left: 5%;
+	padding-left: 2%;
+	padding-right: 2%;
 }
 </style>
