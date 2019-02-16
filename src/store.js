@@ -34,7 +34,8 @@ export default new Vuex.Store({
 				return console.log('Error: No restaurant selected');
 			state.restaurant= {
 				id: restaurant.id,
-				name: restaurant.name
+				name: restaurant.name,
+				businessHours: restaurant.businessHours
 			}
 		}
 	},

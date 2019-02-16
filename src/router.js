@@ -18,12 +18,12 @@ export const router = new Router({
     {
       path: "/login",
       name: "login",
-      component: () => import(/* webpackChunkName: "customer" */ "@/features/customer/login/page.vue"),
+      component: () => import("@/features/customer/login/page.vue"),
     },
     {
       path: "/bookings",
       name: "customerBookings",
-      component: () => import(/* webpackChunkName: "customer-profile" */ "@/features/customer/booking/listBookings.vue"),
+      component: () => import("@/features/customer/booking/listBookings.vue"),
     },
     {
       path: "/restaurant/login",
@@ -33,7 +33,7 @@ export const router = new Router({
     {
       path: "/restaurant/home",
       name: "restaurantList",
-      component: () => import(/* webpackChunkName: "restauranteur" */ "@/features/restaurant/home.vue"),
+      component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restaurant/home.vue"),
 		},
     {
       path: "/restaurant/add",

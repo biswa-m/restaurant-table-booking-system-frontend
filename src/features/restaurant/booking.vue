@@ -1,7 +1,10 @@
 <template>
 	<div v-if="authenticated=='restaurant'"class="container" style="background:#fff">
-		<div class="mt-3">
-			<h3 class="text-left"><small>{{selectedList}} of </small><b>{{$store.state.restaurant.name}}</b></h3>
+		<div class="mt-3 booking-list-restauranteur">
+			<h3 class="text-left">
+				<small>{{selectedList}} of </small>
+				<b>{{$store.state.restaurant.name}}</b>
+			</h3>
 			<div v-show="error" class="alert alert-warning alert-dismissible mx-auto" role="alert">
 				<strong>{{msg}}</strong>
 			</div>
@@ -24,7 +27,8 @@
 									<b>Status:</b>
 								</div>
 								<div class="col-sm-9">
-									<b-form-checkbox-group v-model="params.bookingStatus" :options="['pending', 'confirmed', 'canceled']">
+									<b-form-checkbox-group v-model="params.bookingStatus"
+										:options="['pending', 'confirmed', 'canceled']">
 									</b-form-checkbox-group>
 								</div>
 							</div>
@@ -37,38 +41,52 @@
 					</div>
 				</div>
 			</transition>
-			<b-table responsive hover stacked="sm" :items="bookings" :fields="bookingFields" @row-clicked="toggleDetails">
-
+			<b-table responsive hover
+							stacked="sm"
+							:items="bookings"
+							:fields="bookingFields"
+							@row-clicked="toggleDetails">
 				<template slot="bookingFrom" slot-scope="row">
 					{{convertFormat(row.value)}}
 				</template>
-
 				<template slot="tables" slot-scope="row">
 					{{row.value[0].tableIdentifier}}
 				</template>
-
 				<template slot="actions" slot-scope="row">
-					<b-button v-if="row.item.bookingStatus!='canceled'" size="sm" @click.stop="changeBookingStatus('canceled', row.item)" class="btn-status">Cancel</b-button>
-					<b-button v-if="row.item.bookingStatus=='pending'" size="sm" variant="success" @click.stop="changeBookingStatus('confirmed', row.item)" class="btn-status">Confirm</b-button>
+					<b-button v-if="row.item.bookingStatus!='canceled'"
+										size="sm"
+										class="btn-status"
+										@click.stop="changeBookingStatus('canceled', row.item)">
+						Cancel
+					</b-button>
+					<b-button v-if="row.item.bookingStatus=='pending'"
+										size="sm"
+										variant="success"
+										@click.stop="changeBookingStatus('confirmed', row.item)"
+										class="btn-status">
+						Confirm
+					</b-button>
 				</template>
-
 				<template slot="row-details" slot-scope="row">
-					<b-card>
-						<b-form @submit.prevent="updateTable(row.item, row.toggleDetails)" @reset="row.toggleDetails">
-						</b-form>
-					</b-card>
+					<row-details :row="row"
+											:disabledDates="disabledDates"
+											:days="days"
+											:restaurant="$store.state.restaurant">
+					</row-details>
 				</template>
-
 			</b-table>
 		</div>
 	</div>
 </template>
 
 <script>
+	import rowDetails from "@/features/restaurant/bookingDetails.vue";
+
 	export default {
-		name: "tables",
+		name: "booking-restaurant",
 
 		components: {
+			'row-details': rowDetails 
 		},
 
 		props: {
@@ -90,7 +108,10 @@
 				],
 				params: {},
 				showFilter: false,
-				selectedList: null
+				selectedList: null,
+
+				disabledDates: {},
+				days: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
 			}
 		},
 
@@ -103,7 +124,10 @@
 		watch: {
 			restaurantId() {
 				this.getBookings(this.params);
-			},
+
+				this.updateDisabledDates();
+
+					},
 
 			// When user navigates on sidebar change 'this.selectedList' to update list
 			item(newValue) {
@@ -122,11 +146,31 @@
 				this.selectedList = 'Upcoming bookings';
 			else
 				this.selectedList = this.item;
+
+			this.updateDisabledDates();
 		},
 
 		methods: {
 			toggleDetails(a) {
 				a._showDetails = !a._showDetails;
+				
+				// Get customer details if not present 
+				if (!Object.values(a.customerDetails).length) {
+					this.customerDetails({id: a.customer}, a);
+
+					// Set new reactive vue properties
+					this.$set(a, 'edit', false);
+					this.$set(a, 'buffer', {});
+					console.log(a);
+
+					// Create buffer, to list and edit booking details
+					a.buffer = {
+						bookingFrom: a.bookingFrom,
+						noOfPersons: a.noOfPersons,
+						tables: a.tables,
+						date: a.bookingFrom
+					};
+				}
 			},
 
 			convertFormat(date) {
@@ -172,8 +216,11 @@
 				).then((response) => {
 					console.log(response);
 					if (response.ok && response.body.bookings) {
-						// Add _showDetails key to toggle details on table
+						// Add customerDetails key to view details of customer on each booking 
+						// Add _showDetails key to toggle details on each booking 
+						// Add rowVariant key to change style of each booking depending on booking status
 						this.bookings = response.body.bookings.map(x => {
+							x.customerDetails = {};
 							x._showDetails = false ;
 							x._rowVariant = (x.bookingStatus == 'confirmed')
 								? 'success'
@@ -212,7 +259,53 @@
 					this.params.after = null;
 					this.getBookings(this.params);
 				}
-			}
+			},
+
+			customerDetails(params, output) {
+				console.log('Getting customer details: ', JSON.stringify(params));
+				this.$http.get(
+					process.env.VUE_APP_API_ROUTE + 'restaurant/' + this.$store.state.restaurant.id + '/customer',
+					{
+						params,
+						headers: {
+							Authorization: 'Bearer ' + JSON.parse(this.$store.state.user).token
+						}
+					}
+				).then((response) => {
+					console.log(response);
+					if (response.ok && response.body.customer) {
+						output.customerDetails = response.body.customer;
+					} else {
+						this.error = true;
+						this.msg = (response.body.errors && response.body.errors.message)
+							? response.body.errors.message
+							: "Could not get the customer details";
+					}
+				}).catch((e) => {
+					this.error = true;
+					this.msg = (e.body && e.body.errors && e.body.errors.message)
+						? e.body.errors.message
+						: "Could not get the customer Details";
+					console.log(JSON.stringify(e));
+				});
+			},
+
+			updateDisabledDates() {
+				// Disable past dates
+				this.disabledDates.to = new Date(new Date().setDate(new Date().getDate()-1));
+
+				// Disable restaurant close days of a week
+				let restaurant = this.$store.state.restaurant;
+				let days = [];
+
+				this.days.forEach(function(day, index) {
+					if (restaurant.businessHours[day].end == 0) {
+						days.push(index);
+					}
+				});
+				this.disabledDates.days = days;
+				console.log('Date disabled for bookings: ', this.disabledDates);
+			},
 		}
 	}
 </script>
@@ -235,5 +328,15 @@ margin: 1px;
 .slide-enter, .slide-leave-to {
   transform: translateY(-10px);
   opacity: 0;
+}
+.flex-container {
+	display: flex;
+	justify-content: left;
+}
+.booking-list-restauranteur .form-control[readonly] {
+	background-color: white;
+}
+.booking-list-restauranteur .form-control:disabled {
+	background-color: #e9ecef;
 }
 </style>
