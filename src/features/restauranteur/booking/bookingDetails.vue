@@ -69,7 +69,7 @@
 					</b-col>
 					<b-col md=6 class="flex-container">
 						<span class="my-auto">Table:</span>
-						<div class="ml-auto mr-0 my-1">
+						<div class="ml-auto mr-0 my-auto">
 							<input class="form-control no-style"
 							:value="row.item.buffer.tables[0].tableIdentifier"
 							disabled>
@@ -111,30 +111,9 @@
 </template>
 
 <script>
-	let generateTimeSlots = function(start, end, interval, date) {
-		let value = start;
-		let slots = [];
-		let overflow = 0;
-
-		while (value <= (end + 1 - interval)) {
-			slots.push(value);
-
-			value += interval;
-			overflow = parseInt((value % 100) / 60);
-			value = value - (overflow * 60) + (overflow * 100);
-		}
-
-		// If booking date is today, do not show past times.
-		if (date.setHours(0, 0, 0, 0) == (new Date()).setHours(0, 0, 0, 0)) {
-			// Get current time and convert it to hhmm format
-			let currentTime = ((new Date()).getHours())*100 + (new Date()).getMinutes();
-			// remove array element from timeSlots which are less than current time
-			slots = slots.filter(x => x > currentTime);
-		}
-
-		return slots
-	}
 	import datepicker from "vuejs-datepicker";
+	import generateTimeSlots from "@/helpers/generateTimeSlots.js";
+	import formatTime from "@/helpers/formatTime.js";
 
 	export default {
 		name: "booking-details",
@@ -147,7 +126,8 @@
 				msg: '',
 
 				time: null,
-				timeSlots: []
+				timeSlots: [],
+				timeInterval: 30
 			}
 		},
 
@@ -156,31 +136,7 @@
 		},
 
 		methods: {
-			formatTime(time, date, returnHHMM) {
-				let padZero = function(value) {
-					let str = "0" + value;
-					return str.substr(str.length - 2)
-				}
-
-				// if time is in Date format instead of hhmm format
-				if (date) {
-					let hours = (new Date(time)).getHours();
-					let mins = (new Date(time)).getMinutes();
-
-					var hhmm = parseInt(hours) * 100 + parseInt(mins);
-				} else {
-					var hhmm = time;
-				}
-
-				if(returnHHMM) return hhmm;
-
-				hhmm = parseInt(hhmm);
-				if (hhmm != 0 && !hhmm) return null
-				else if (hhmm < 100) return '12:' + padZero(hhmm) + ' AM';
-				else if (hhmm < 1200) return (padZero(parseInt(hhmm / 100)) + ':' + padZero(hhmm % 100) + ' AM');
-				else if (hhmm >= 1200 && hhmm < 1300) return '12:' + padZero(hhmm % 100) + ' PM';
-				else return (padZero(parseInt(hhmm / 100) - 12) + ':' + padZero(hhmm % 100) + ' PM');
-			},
+			formatTime: formatTime,
 
 			cancelEdit() {
 				// collapse details
@@ -255,7 +211,7 @@
 
 				// Generate availabe time slots
 				let bHours = this.restaurant.businessHours[this.days[(new Date(this.row.item.bookingFrom)).getDay()]];
-				this.timeSlots = generateTimeSlots(bHours.start, bHours.end, 30, new Date(this.row.item.bookingFrom));
+				this.timeSlots = generateTimeSlots(bHours.start, bHours.end, this.timeInterval, new Date(this.row.item.bookingFrom));
 			},
 			
 			dateSelected(value) {
@@ -266,7 +222,7 @@
 
 				// Generate availabe time slots
 				let bHours = this.restaurant.businessHours[this.days[value.getDay()]]
-				this.timeSlots = generateTimeSlots(bHours.start, bHours.end, 30, value);
+				this.timeSlots = generateTimeSlots(bHours.start, bHours.end, this.timeInterval, value);
 			}
 		}
 	}

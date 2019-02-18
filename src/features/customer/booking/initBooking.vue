@@ -201,31 +201,9 @@
 
 <script>
 	import login from "@/features/customer/login/login.vue";
+	import generateTimeSlots from "@/helpers/generateTimeSlots.js";
+	import formatTime from "@/helpers/formatTime.js";
 	import datepicker from "vuejs-datepicker";
-
-	let generateTimeSlots = function(start, end, interval, date) {
-		let value = start;
-		let slots = [];
-		let overflow = 0;
-
-		while (value <= (end + 1 - interval)) {
-			slots.push(value);
-
-			value += interval;
-			overflow = parseInt((value % 100) / 60);
-			value = value - (overflow * 60) + (overflow * 100);
-		}
-
-		// If booking date is today, do not show past times.
-		if (date.setHours(0, 0, 0, 0) == (new Date()).setHours(0, 0, 0, 0)) {
-			// Get current time and convert it to hhmm format
-			let currentTime = ((new Date()).getHours())*100 + (new Date()).getMinutes();
-			// remove array element from timeSlots which are less than current time
-			slots = slots.filter(x => x > currentTime);
-		}
-
-		return slots
-	}
 
 	export default {
 		data() {
@@ -282,20 +260,7 @@
 		},
 
 		methods: {
-			formatTime(hhmm) {
-				let padZero = function(value) {
-					let str = "0" + value;
-					return str.substr(str.length - 2)
-				}
-
-				hhmm = parseInt(hhmm);
-
-				if (hhmm != 0 && !hhmm) return null
-				else if (hhmm < 100) return '12:' + padZero(hhmm) + ' AM';
-				else if (hhmm < 1200) return (padZero(parseInt(hhmm / 100)) + ':' + padZero(hhmm % 100) + ' AM');
-				else if (hhmm >= 1200 && hhmm < 1300) return '12:' + padZero(hhmm % 100) + ' PM';
-				else return (padZero(parseInt(hhmm / 100) - 12) + ':' + padZero(hhmm % 100) + ' PM');
-			},
+			formatTime: formatTime,
 
 			checkUser() {
 				if (this.$store.state.authenticated === "customer"

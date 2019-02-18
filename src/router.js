@@ -4,7 +4,7 @@ import Router from "vue-router";
 import store from "@/store.js";
 
 import home from "@/features/customer/home.vue";
-import restaurantOwnerLogin from "@/features/restaurant/login.vue";
+import restaurantOwnerLogin from "@/features/restauranteur/login.vue";
 
 Vue.use(Router);
 
@@ -33,27 +33,42 @@ export const router = new Router({
     {
       path: "/restaurant/home",
       name: "restaurantList",
-      component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restaurant/home.vue"),
+      component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restauranteur/restaurants/index.vue"),
 		},
     {
       path: "/restaurant/add",
       name: "restaurantAdd",
-      component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restaurant/restaurantAdd.vue"),
+      component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restauranteur/restaurants/restaurantAdd.vue"),
 		},
     {
 			path: "/restaurant",
-      name: "restaurantDashboard",
-      component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restaurant/restaurantDashboard.vue"),
+      component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restauranteur/home.vue"),
 
 			children: [
 				{
+					path: "/",
+					name: "restaurantDashboard",
+					component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restauranteur/dashboard/index.vue")
+				},
+				{
 					path: "tables",
-					component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restaurant/tables.vue")
+					component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restauranteur/table/tables.vue")
 				},
 				{
 					path: "booking",
-					component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restaurant/booking.vue")
-				}
+					component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restauranteur/booking/index.vue"),
+
+					children: [
+						{
+							path: "",
+							component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restauranteur/booking/selectList.vue"),
+						},
+						{
+							path: "add",
+							component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restauranteur/booking/bookingAdd.vue")
+						}
+					]
+				},
 			]
 		},
     {

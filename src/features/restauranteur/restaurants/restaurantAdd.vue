@@ -166,8 +166,11 @@
 				).then((response) => {
 					console.log(response);
 					if (response.ok && response.body.restaurant.id) {
-						this.$router.push('/restaurant/' + response.body.restaurant.id);
 						console.log('Restaurant created');
+
+						// route to restaurant dashboard
+						this.$store.commit('selectRestaurant', response.body.restaurant);
+						this.$router.push('/restaurant/');
 					} else {
 						this.error = true;
 						this.msg = (response.body.errors && response.body.errors.message)

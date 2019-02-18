@@ -53,7 +53,7 @@
 </template>
 
 <script>
-	import addTables from "@/features/restaurant/addTables.vue";
+	import addTables from "@/features/restauranteur/table/addTables.vue";
 
 	export default {
 		name: "tables",

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-	import restaurantList from '@/features/restaurant/restaurantListOfOwner.vue';
+	import restaurantList from '@/features/restauranteur/restaurants/restaurantListOfOwner.vue';
 
 	export default {
 		name: "restaurat-owner-homepage",

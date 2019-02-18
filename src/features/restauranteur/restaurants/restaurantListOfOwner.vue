@@ -47,7 +47,7 @@
 		methods: {
 			selectRestaurant(restaurant) {
 				this.$store.commit('selectRestaurant', restaurant);
-				this.$router.push("/restaurant/" + restaurant.id);
+				this.$router.push("/restaurant/");
 			},
 			multiline(value) {
 				return JSON.parse(JSON.stringify(value).replace(/\\n/gi, "<br/>"));
