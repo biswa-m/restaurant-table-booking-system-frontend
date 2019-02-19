@@ -40,16 +40,52 @@
 					</div>
 				</div>
 			</transition>
-			<restaurant-list :restaurant="$store.state.restaurant"
+			<b-row class="mt-1">
+				<b-col md=9>
+					<div>
+						<b-pagination
+							:limit="8"
+							:total-rows="count"
+							:per-page="limit"
+							v-model="currentPage"
+							class="my-0"
+							@change="paginate"
+						/>
+					</div>
+				</b-col>
+				<b-col md=3 class="flex">
+					<span class="my-auto ml-0 mr-2">Per page</span>
+					<b-form-select :options="pageOptions" class="per-page" v-model="limit" />
+				</b-col>
+			</b-row>
+			<booking-list :restaurant="$store.state.restaurant"
 											:bookings="bookings"
 											:disabledDates="disabledDates">
-			</restaurant-list>
+			</booking-list>
+			<b-row class="mt-1">
+				<b-col md=9>
+					<div>
+						<b-pagination
+							:limit="8"
+							:total-rows="count"
+							:per-page="limit"
+							v-model="currentPage"
+							class="my-0"
+							@change="paginate"
+						/>
+					</div>
+				</b-col>
+				<b-col md=3 class="flex">
+					<span class="my-auto ml-0 mr-2">Per page</span>
+					<b-form-select :options="pageOptions" class="per-page" v-model="limit" />
+				</b-col>
+			</b-row>
 		</div>
 	</div>
 </template>
 
 <script>
-	import restaurantList from "@/features/restauranteur/booking/bookingList.vue"
+	import bookingList from "@/features/restauranteur/booking/bookingList.vue"
 
 	export default {
 		name: "select-booking-list",
@@ -60,7 +96,7 @@
 		},
 
 		components: {
-			'restaurant-list': restaurantList
+			'booking-list': bookingList 
 		},
 
 		data () {
@@ -71,6 +107,12 @@
 				bookings: [],
 				showFilter: false,
 				params: {},
+
+				pageOptions: [5, 10, 15, 20, 25, 30],
+				count: 0,
+				limit: 20,
+				skip: 0,
+				currentPage: 0
 			}
 		},
 
@@ -88,6 +130,12 @@
 			selectedList(newValue, oldValue) {
 				// Whent different list is selected update booking list
 				this.updateBookingList(newValue);
+			},
+
+			limit(value) {
+				this.skip = 0;
+				this.currentPage = 1;
+				this.getBookings(this.params);
 			}
 		},
 
@@ -97,6 +145,8 @@
 
 		methods: {
 			getBookings(params) {
+				params.skip = this.skip;
+				params.limit = this.limit;
 				console.log('Getting bookings: ', JSON.stringify(params));
 				this.$http.get(
 					process.env.VUE_APP_API_ROUTE + 'restaurant/bookings/' + this.$store.state.restaurant.id,
@@ -122,6 +172,9 @@
 									: 'warning';
 							return x;
 						});
+
+						// Total no of booking
+						this.count = response.body.count
 					} else {
 						this.error = true;
 						this.msg = (response.body.errors && response.body.errors.message)
@@ -153,6 +206,12 @@
 					this.getBookings(this.params);
 				}
 			},
+
+			paginate(page) {
+				this.skip = (page - 1) * this.limit;
+				this.getBookings(this.params);
+				console.log('Page number: ', page, 'skip: ', this.skip);
+			}
 		}
 	}
 </script>
@@ -185,5 +244,8 @@ margin: 1px;
 }
 .booking-restauranteur .form-control:disabled {
 	background-color: #e9ecef;
+}
+.per-page {
+	max-width: 60px;
 }
 </style>

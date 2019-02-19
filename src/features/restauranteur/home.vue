@@ -9,7 +9,7 @@
 			@collapse="onCollapse"
 			@itemClick="onItemClick"
 			width="250px"
-			style="padding-top:60px"/>
+			style="padding-top:60px; z-index:1;"/>
 	</div>
 </template>
 
