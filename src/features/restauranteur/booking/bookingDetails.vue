@@ -17,11 +17,11 @@
 			</div>
 			<b-form @submit.prevent="updateBooking()">
 				<b-row class="">
-					<b-col md v-if="!row.item.edit" class="flex-container">
+					<b-col md v-if="!row.item.edit" class="flex">
 						<span class="my-auto">Date:</span>
 						<span class="my-auto ml-2">{{formatTime(row.item.bookingFrom, 1) +' '+ (new Date(row.item.bookingFrom)).toDateString()}}</span>
 					</b-col>
-					<b-col md class="flex-container">
+					<b-col md class="flex">
 						<div v-if="row.item.edit" class="my-1 ml-auto mr-0 w-100">
 							<datepicker
 								v-model="row.item.buffer.date"
@@ -58,7 +58,7 @@
 					</b-col>
 				</b-row>
 				<b-row class="">
-					<b-col md=6 class="flex-container">
+					<b-col md=6 class="flex">
 						<span class="my-auto">Persons:</span>
 						<div class="my-1 ml-auto mr-0">
 							<input :class="row.item.edit ? 'form-control input' : 'form-control no-style'"
@@ -67,7 +67,7 @@
 										:disabled="!row.item.edit">
 						</div>
 					</b-col>
-					<b-col md=6 class="flex-container">
+					<b-col md=6 class="flex">
 						<span class="my-auto">Table:</span>
 						<div class="ml-auto mr-0 my-auto">
 							<input class="form-control no-style"
@@ -86,7 +86,7 @@
 					</b-button>
 					<b-button v-show="!row.item.edit"
 										size="sm"
-										@click="row.toggleDetails(); state=null;"
+										@click="row.toggleDetails(); stat=null; $emit('ok')"
 										class="mr-1"
 										variant="success">
 						Ok
@@ -135,13 +135,15 @@
 			datepicker,
 		},
 
+		mounted() {console.log(this.row);},
+
 		methods: {
 			formatTime: formatTime,
 
 			cancelEdit() {
 				// collapse details
 				this.row.toggleDetails();
-				this.state = null;
+				this.stat = null;
 
 				// Reset changes
 				this.row.item.buffer = {
@@ -160,7 +162,7 @@
 				this.row.item.buffer.date = (new Date(this.row.item.buffer.date)).setHours(parseInt(this.time/100), this.time%100 , 0, 0);
 
 				this.$http.put(
-					process.env.VUE_APP_API_ROUTE + 'restaurant/booking/' + this.$store.state.restaurant.id + '/' + this.row.item._id,
+					process.env.VUE_APP_API_ROUTE + 'restaurant/booking/' + this.$store.state.restaurant.id + '/' + (this.row.item._id || this.row.item.id),
 					{
 						booking: {
 							bookingFrom: this.row.item.buffer.date,
@@ -241,4 +243,7 @@
 		background: 0 !important;
 		border-style: none !important;
 	}
+	.flex {
+		display: flex;
+}
 </style>
