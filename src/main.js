@@ -1,7 +1,6 @@
 import Vue from "vue";
 import vueResource from "vue-resource";
 import BootstrapVue from 'bootstrap-vue'
-//import vueTimepicker from 'vue2-timepicker'
 
 import App from "./App.vue";
 import {router} from "./router";
@@ -14,13 +13,31 @@ Vue.config.productionTip = false;
 
 Vue.use(vueResource);
 Vue.use(BootstrapVue);
-//Vue.use(vueTimepicker)
 
-new Vue({
+var vue = new Vue({
   el: '#app',
   router,
   store,
   render: function(h) {
 		return h(App);
   }
+});
+
+// Intercept http requests
+Vue.http.interceptors.push(function(request) {
+	// return response callback
+	return function(response) {
+		// modify response
+		if (response.status == 401 && response.body && response.body.errors && response.body.errors.message == 'jwt expired') {
+			console.log('Token expired for: ', vue.$store.state.authenticated);
+			if (vue.$store.state.authenticated == 'restaurant') {
+				console.log('push rest');
+				vue.$router.push('/restaurant/login');
+			} else {
+				console.log('push cust');
+				vue.$router.push('/login');
+			}
+			vue.$store.commit('logout');
+		}
+  };
 });
