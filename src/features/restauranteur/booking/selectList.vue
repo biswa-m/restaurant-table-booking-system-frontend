@@ -1,7 +1,8 @@
 <template>
 		<div class="booking-restauranteur">
 			<h3 class="text-left">
-				<small>{{selectedList}} of </small>
+				{{$store.state.bookings.status}}
+				<small>{{$store.state.selectedBookingList}} of </small>
 				<b>{{$store.state.restaurant.name}}</b>
 			</h3>
 			<div v-show="error" class="alert alert-warning alert-dismissible mx-auto" role="alert">
@@ -49,7 +50,8 @@
 							</div>
 							<div class="row">
 								<b-button variant="primary btn-sm ml-auto mr-3 mt-3"
-													@click="getBookings(params); showFilter=false;">Done
+									@click="applyFilter">
+									Done
 								</b-button>
 							</div>
 						</b-card>
@@ -106,7 +108,6 @@
 		name: "select-booking-list",
 
 		props: {
-			selectedList: null,
 			disabledDates: {}
 		},
 
@@ -142,6 +143,9 @@
 		computed: {
 			restaurantId() {
 				return this.$store.state.restaurant.id;
+			},
+			selectedBookingList() {
+				return this.$store.state.selectedBookingList
 			}
 		},
 
@@ -150,8 +154,11 @@
 				this.getBookings(this.params);
 			},
 
-			selectedList(newValue, oldValue) {
+			selectedBookingList(newValue, oldValue) {
 				// Whent different list is selected update booking list
+				this.params = {};
+				this.skip = 0;
+				this.currentPage = 1;
 				this.updateBookingList(newValue);
 			},
 
@@ -163,14 +170,24 @@
 		},
 
 		mounted() {
-			this.updateBookingList(this.selectedList);
+			// Receive bookingStatus filter, send by other components via store
+			// And clear it after receive
+			this.params.bookingStatus = this.$store.state.bookings.status;
+			this.$store.commit('bookingStatus', []);
+
+			this.updateBookingList(this.$store.state.selectedBookingList);
 		},
 
 		methods: {
+			applyFilter() {
+				this.showFilter = false;
+				this.getBookings(this.params);
+			},
+
 			getBookings(params) {
 				params.skip = this.skip;
 				params.limit = this.limit;
-				console.log('Getting bookings: ', JSON.stringify(params));
+				console.log('Getting bookings: ', params);
 				this.$http.get(
 					process.env.VUE_APP_API_ROUTE + 'restaurant/bookings/' + this.$store.state.restaurant.id,
 					{

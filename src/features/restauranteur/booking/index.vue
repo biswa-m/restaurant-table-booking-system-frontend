@@ -1,7 +1,7 @@
 <template>
 	<div v-if="authenticated=='restaurant'"class="container" style="background:#fff">
 		<div class="mt-3">
-			<router-view :selectedList="selectedList" :disabledDates="disabledDates" :key="$store.state.restaurant.id"></router-view>
+			<router-view :disabledDates="disabledDates" :key="$store.state.restaurant.id"></router-view>
 		</div>
 	</div>
 </template>
@@ -9,10 +9,6 @@
 <script>
 	export default {
 		name: "booking-restaurant",
-
-		props: {
-			item: null
-		},
 
 		computed: {
 			restaurantId() {
@@ -24,30 +20,17 @@
 			return {
 				disabledDates: null,
 				authenticated: this.$store.state.authenticated,
-				selectedList: null,
 				days: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
 			}
 		},
 
 		watch: {
-			// When user navigates on sidebar change 'this.selectedList' to update list
-			item(newValue) {
-				// When user clicks on 'Bookings' open upcoming booking by default
-				newValue = (newValue === 'Bookings' ? 'Upcoming bookings' : newValue)
-				this.selectedList = newValue;
-			},
-
 			restaurantId() {
 				this.updateDisabledDates();
 			}
 		},
 
 		mounted() {
-			if (!this.item || this.item == 'Bookings')
-				this.selectedList = 'Upcoming bookings';
-			else
-				this.selectedList = this.item;
-
 			this.updateDisabledDates();
 		},
 

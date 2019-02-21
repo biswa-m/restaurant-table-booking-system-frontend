@@ -10,7 +10,12 @@ export default new Vuex.Store({
   state: {
 		authenticated: false,
 		user: {},
-		restaurant: {id: '', name: ''}
+		restaurant: {id: '', name: ''},
+
+		selectedBookingList: 'Upcoming bookings',
+		bookings:{
+			status: []
+		}
 	},
 
 	mutations: {
@@ -35,7 +40,19 @@ export default new Vuex.Store({
 			state.restaurant= {
 				id: restaurant.id,
 				name: restaurant.name,
-				businessHours: restaurant.businessHours
+				businessHours: restaurant.businessHours,
+				address: restaurant.address,
+				description: restaurant.description
+			}
+		},
+		selectBookingList(state, value) {
+			if (!value || value=='Bookings') value = 'Upcoming bookings'
+			state.selectedBookingList = value;
+		},
+
+		bookingStatus(state, value) {
+			if (typeof(value) == 'object' && value instanceof Array) {
+				state.bookings.status = value;
 			}
 		}
 	},

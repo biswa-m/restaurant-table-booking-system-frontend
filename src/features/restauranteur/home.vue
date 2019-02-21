@@ -1,7 +1,7 @@
 <template>
 	<div id="dashboard" class="text-left" :style="collapsedPadding">
 		<div class="dashboard text-center">
-			<router-view :item="item"></router-view>
+			<router-view></router-view>
 		</div>
 		<sidebar-menu id="sidebar"
 			:menu="menu"
@@ -69,8 +69,7 @@
 						title: 'Tables',
 						icon: 'fa fa-coffee'
 					}
-				],
-				item: null 
+				]
 			}
 		},
 
@@ -105,7 +104,7 @@
 			},
 
 			onItemClick(event, item) {
-				this.item = item.title;
+				this.$store.commit('selectBookingList', item.title);
 			}
 		}
 	}
