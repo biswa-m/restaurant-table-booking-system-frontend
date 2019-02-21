@@ -66,6 +66,10 @@ export const router = new Router({
 						{
 							path: "add",
 							component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restauranteur/booking/bookingAdd.vue")
+						},
+						{
+							path: "search",
+							component: () => import(/* webpackChunkName: "restaurantDashboard" */ "@/features/restauranteur/booking/search.vue")
 						}
 					]
 				},

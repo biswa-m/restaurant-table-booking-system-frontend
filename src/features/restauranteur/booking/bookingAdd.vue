@@ -336,4 +336,14 @@
 		margin-top: 9px;
 		text-align: right;
 	}
+	.submit-button {
+		background: #f0ad4e;
+		border-color: #f0ad4e;
+		color: #ffffff;
+		margin: 10px;
+		width: 200px;
+	}
+	.submit-button:disabled {
+		background: #dbb77a
+	}
 </style>

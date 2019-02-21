@@ -55,7 +55,7 @@
 								title: 'Add bookings',
 							},
 							{
-								href: '/restaurant/booking',
+								href: '/restaurant/booking/search',
 								title: 'Search bookings',
 							},
 							{
