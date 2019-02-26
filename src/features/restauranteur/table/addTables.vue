@@ -137,9 +137,8 @@
 				}
 
 				this.$http.post(
-					process.env.VUE_APP_API_ROUTE + 'table',
+					process.env.VUE_APP_API_ROUTE + 'restaurant/table/' + this.$store.state.restaurant.id,
 					{
-						restaurant: {id: this.$store.state.restaurant.id},
 						tables: tables
 					},
 					{

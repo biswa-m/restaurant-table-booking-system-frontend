@@ -55,6 +55,29 @@
 							</div>
 						</b-col>
 					</b-row>
+					<b-row>
+						<b-col md="6">
+							<span class="label">Table</span><br/>
+							<div class="dropdown">
+								<button class="form-control input"
+												:disabled="!noOfPersons || !date || !time"
+												type="button"
+												id="dropdownMenuButton"
+												data-toggle="dropdown"
+												aria-haspopup="true"
+												aria-expanded="false">
+									<span v-if="table && table.id">{{table.tableIdentifier}}</span>
+									<span v-if="!table || !table.id" class="placeholder">Automatic Selection</span>
+								</button>
+								<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+									<a @click="table=null" class="dropdown-item">Automatic Selection</a>
+									<div v-for="tableData in tables">
+										<a @click="table=tableData" class="dropdown-item">{{tableData.tableIdentifier}}</a>
+									</div>
+								</div>
+							</div>
+						</b-col>
+					</b-row>
 				</div>
 				<b-row v-if="newCustomer">
 					<b-col md="12">
@@ -123,6 +146,9 @@
 				name: null,
 				email: null,
 				phone: null,
+				table: null,
+
+				tables: [],
 
 				days: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
 				timeSlots: [],
@@ -138,6 +164,14 @@
 			'row-details': rowDetails,
 		},
 
+		computed: {
+			activateTableSelection() {
+				if (this.date && this.time && this.noOfPersons) {
+					return this.date + this.time + this.noOfPersons;
+				}
+			}
+		},
+
 		watch: {
 			date: function(date) {
 				// Reset selected time
@@ -148,6 +182,14 @@
 				// Set time slots
 				let businessHours = this.$store.state.restaurant.businessHours[this.days[date.getDay()]];
 				this.timeSlots = generateTimeSlots(businessHours.start, businessHours.end, this.timeInterval, date);
+			},
+
+			activateTableSelection: function(value) {
+				if (value) {
+					this.table = null;
+					this.tables = [];
+					this.listAvailableTables();
+				}
 			}
 		},
 
@@ -214,7 +256,8 @@
 							},
 							"booking": {
 								"noOfPersons": this.noOfPersons, 
-								"bookingFrom": date
+								"bookingFrom": date,
+								"table": this.table.id
 							}
 						},
 						{
@@ -251,11 +294,6 @@
 
 									// Show booking Details
 									this.bookingWindow = 'details';
-								} else {
-									this.error = true;
-									this.msg = (response.body.errors && response.body.errors.message)
-										? response.body.errors.message
-										: "Could not get the customer details";
 								}
 							}).catch((e) => {
 								this.error = true;
@@ -271,7 +309,7 @@
 							this.newCustomer = true;
 						} else {
 							this.error = true;
-							this.msg = (e.body && e.body.errors && e.boderrors.message)
+							this.msg = (e.body && e.body.errors && e.body.errors.message)
 								? e.body.errors.message
 								: "Could not get the customer Details";
 						}
@@ -302,6 +340,28 @@
 						? e.body.errors.message
 						: "Unable to create user";
 					console.log(e);
+				});
+			},
+
+			listAvailableTables() {
+				let date = this.date.setHours(parseInt(this.time/100), this.time%100 , 0, 0);
+				console.log('Getting Lists of tables..');
+
+				this.$http.get(
+					process.env.VUE_APP_API_ROUTE + 'restaurant/tables/' + this.$store.state.restaurant.id,
+					{
+						params: {availability: 'available', date: date, mincapacity: this.noOfPersons},
+						headers: {
+							Authorization: 'Bearer ' + JSON.parse(this.$store.state.user).token
+						}
+					}
+				).then(response => {
+					console.log('Response: ', response);
+					if (response && response.body && response.body.tables) {
+						this.tables = response.body.tables;
+					}
+				}).catch(e => {
+					console.log('Error listing tables: ', e);
 				});
 			}
 		}

@@ -89,9 +89,8 @@
 			getTables() {
 				console.log('Getting tables');
 				this.$http.get(
-					process.env.VUE_APP_API_ROUTE + 'table',
+					process.env.VUE_APP_API_ROUTE + 'restaurant/tables/' + this.$store.state.restaurant.id,
 					{
-						params: {restaurant: this.$store.state.restaurant.id},
 						headers: {
 							Authorization: 'Bearer ' + JSON.parse(this.$store.state.user).token
 						}
@@ -125,7 +124,7 @@
 				console.log('Updating Table');
 
 				this.$http.put(
-					process.env.VUE_APP_API_ROUTE + 'table',
+					process.env.VUE_APP_API_ROUTE + 'restaurant/table',
 					{
 						table: {
 							id: item.id,

@@ -1,7 +1,6 @@
 <template>
 		<div class="booking-restauranteur">
 			<h3 class="text-left">
-				{{$store.state.bookings.status}}
 				<small>{{$store.state.selectedBookingList}} of </small>
 				<b>{{$store.state.restaurant.name}}</b>
 			</h3>
