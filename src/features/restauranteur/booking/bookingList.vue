@@ -70,16 +70,7 @@
 
 					// Set new reactive vue properties
 					this.$set(a, 'edit', false);
-					this.$set(a, 'buffer', {});
 					console.log(a);
-
-					// Create buffer, to list and edit booking details
-					a.buffer = {
-						bookingFrom: a.bookingFrom,
-						noOfPersons: a.noOfPersons,
-						tables: a.tables,
-						date: a.bookingFrom
-					};
 				}
 			},
 
