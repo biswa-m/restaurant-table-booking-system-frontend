@@ -1,24 +1,21 @@
 <template>
 	<div v-show="authenticated=='restaurant'"class="container" style="background:#fff">
-		<div class=row>
+		<div class="mt-4">
 			<add-tables v-on:addtables="getTables"></add-tables>
 		</div>
-		<div class="row list-table">
-			<div v-show="error" class="alert alert-warning alert-dismissible mx-auto" role="alert">
-				<strong>{{msg}}</strong>
-			</div>
-			<b-table responsive striped hover :items="tables" :fields="tableFields">
-				<template slot="actions" slot-scope="row">
-					<!-- We use @click.stop here to prevent a 'row-clicked' event from also happening -->
-					<b-button size="sm" variant="link" @click.stop="row.toggleDetails" class="mr-1" title="Edit">
-						Edit
-					</b-button>
-					<b-button size="sm" variant="" @click.stop="deleteTable(row.item.id)" class="mr-1" title="Delete">
-						<i class="fas fa-trash" aria-hidden="true"></i>
-					</b-button>
-				</template>
+		<div class="container-fluid mt-5 p-0">
+			<div class="list-table mx-auto">
+				<div v-show="error" class="alert alert-warning alert-dismissible mx-auto" role="alert">
+					<strong>{{msg}}</strong>
+				</div>
+				<b-table responsive
+								striped hover
+								stacked="sm"
+								@row-clicked="toggleDetails"
+								:items="tables"
+								:fields="tableFields">
 					<template slot="row-details" slot-scope="row">
-						<b-card>
+						<div class="card p-3 mb-4 mt-0">
 							<b-form @submit.prevent="updateTable(row.item, row.toggleDetails)" @reset="row.toggleDetails">
 								<div class="row">
 									<div class="col-md-6">
@@ -45,9 +42,10 @@
 								<b-button size="sm" @click="row.toggleDetails" class="mr-1">Cancel</b-button>
 								<b-button size="sm" variant="success" type="submit" >Update</b-button>
 							</b-form>
-						</b-card>
+						</div>
 					</template>
-			</b-table>
+				</b-table>
+			</div>
 		</div>
 	</div>
 </template>
@@ -69,7 +67,11 @@
 				msg: '',
 				authenticated: this.$store.state.authenticated,
 				tables: [],
-				tableFields: ["tableIdentifier", "capacity", "description", "actions"]
+				tableFields: [
+					{"tableIdentifier": {class: "tableIdentifier"}},
+					{"capacity": {class: "capacity"}},
+					"description"
+				]
 			}
 		},
 
@@ -99,7 +101,10 @@
 					console.log(response);
 					if (response.ok && response.body.tables) {
 						console.log('Tables: ', response.body.tables);
-						this.tables = response.body.tables;
+						this.tables = response.body.tables.map(x => {
+							x._showDetails = false;
+							return x;
+						});
 					} else {
 						this.error = true;
 						this.msg = (response.body.errors && response.body.errors.message)
@@ -162,6 +167,10 @@
 
 			deleteTable(id) {
 				console.log('Delete operation is not ready yet, Delete request recieved for table: ', id);
+			},
+
+			toggleDetails(a) {
+				a._showDetails = !a._showDetails;
 			}
 		}
 	}
@@ -169,9 +178,14 @@
 
 <style>
 .list-table {
-	margin-top: 20px;
+	max-width: 900px;
 }
 .fa-trash {
 	color: #eaa;
+}
+.tableIdentifier {
+	min-width: 140px;
+}
+.capacity {
 }
 </style>

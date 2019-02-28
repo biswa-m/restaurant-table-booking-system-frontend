@@ -10,18 +10,20 @@
 		<template slot="tables" slot-scope="row">
 			{{row.value[0].tableIdentifier}}
 		</template>
-		<template slot="actions" slot-scope="row">
+		<template slot="cancel" slot-scope="row">
 			<b-button v-if="row.item.bookingStatus!='canceled'"
-								size="sm"
-								class="btn-status"
+								size="lg"
+								class="btn-status btn-block"
 								@click.stop="changeBookingStatus('canceled', row.item)">
 				Cancel
 			</b-button>
+		</template>
+		<template slot="confirm" slot-scope="row">
 			<b-button v-if="row.item.bookingStatus=='pending'"
-								size="sm"
+								size="lg"
 								variant="success"
 								@click.stop="changeBookingStatus('confirmed', row.item)"
-								class="btn-status">
+								class="btn-status btn-block">
 				Confirm
 			</b-button>
 		</template>
@@ -54,7 +56,8 @@
 					{key: 'tables', label: 'Table'},
 					{key: 'noOfPersons', label: 'Persons'},
 					{key: 'bookingStatus', label: 'Status'},
-					{key: 'actions', label: ''}
+					{key: 'confirm', label: ''},
+					{key: 'cancel', label: ''}
 				],
 				days: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
 			}
@@ -135,3 +138,10 @@
 		}
 	}
 </script>
+
+<style scoped>
+.btn-status {
+	height: 100%;
+	min-height: 35px;
+}
+</style>

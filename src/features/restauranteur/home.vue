@@ -68,6 +68,11 @@
 						href: '/restaurant/tables',
 						title: 'Tables',
 						icon: 'fa fa-coffee'
+					},
+					{
+						href: '/restaurant/home',
+						title: 'Restaurants',
+						icon: 'fa fa-users'
 					}
 				]
 			}
