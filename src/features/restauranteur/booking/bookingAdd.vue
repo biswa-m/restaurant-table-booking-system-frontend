@@ -246,6 +246,7 @@
 					console.log('Sending booking request..');
 
 					let date = this.date.setHours(parseInt(this.time/100), this.time%100 , 0, 0);
+					let table = (this.table && this.table.id) ? this.table.id : null;
 
 					// Send booking request
 					this.$http.post(
@@ -257,7 +258,7 @@
 							"booking": {
 								"noOfPersons": this.noOfPersons, 
 								"bookingFrom": date,
-								"table": this.table.id
+								"table": table
 							}
 						},
 						{
